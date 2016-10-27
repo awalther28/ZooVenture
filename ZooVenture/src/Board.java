@@ -95,7 +95,7 @@ public class Board {
 				String[] coordinates = s.split(",");
 				int xCoord = Integer.parseInt(coordinates[0]);
 				int yCoord = Integer.parseInt(coordinates[1]);			
-				this.board[yCoord][xCoord].setContents(new Animal(stream.readLine(), stream.readLine(), stream.readLine(), stream.readLine(), stream.readLine()));
+				this.board[yCoord][xCoord].setContents(new Animal(stream.readLine(), stream.readLine(), stream.readLine(), stream.readLine(), stream.readLine(), stream.readLine()));
 				s = stream.readLine();
 			}
 				
