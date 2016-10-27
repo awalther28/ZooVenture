@@ -1,0 +1,12 @@
+2,2
+Tiger
+70
+10
+live.txt
+ko.txt
+1,2
+Bear
+100
+20
+live.txt
+ko.txt
