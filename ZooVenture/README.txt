@@ -10,15 +10,8 @@ back to their cages. When all of the animals are in their cages
 you win the game.
 
 
-Next implementations will include classes that will allow me to
-utilize the Model View Controller design pattern. Those classes 
-will include: ZooView and ZooPanel will make up the
-view; ZooRePaintController (extends KeyAdapter and implements
-MouseListener), AnimalController, ItemController, 
-and MiniMapController are event handlers that implement 
-ActionListener, they serve as event handlers; ZooModel 
-will be a model (serving as an intermediary between game engine 
-logic of the current classes).
+Next implementations will include a MVC pattern:
+![Alt text](/relative/path/to/MVCdiagram.jpg?raw=true "Optional Title")
 
 
 
