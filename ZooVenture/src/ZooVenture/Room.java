@@ -1,3 +1,4 @@
+package ZooVenture;
 import java.util.ArrayList;
 
 /**
@@ -32,7 +33,7 @@ public class Room {
 	{
 		return this.contents;
 	}
-
+	
 	@Override
 	public String toString()
 	{
