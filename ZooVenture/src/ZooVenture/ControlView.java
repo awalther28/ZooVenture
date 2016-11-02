@@ -3,17 +3,14 @@
  */
 package ZooVenture;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.io.IOException;
+import java.awt.event.KeyListener;
 
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -26,6 +23,7 @@ import javax.swing.ListSelectionModel;
  * @author allisonwalther
  *
  */
+@SuppressWarnings("serial")
 public class ControlView extends JFrame implements ActionListener{
 	//private ZooView zoo;
 	private GameModel model;
@@ -43,15 +41,70 @@ public class ControlView extends JFrame implements ActionListener{
 	private JPanel statsPanel;
 	private JButton miniMapButton;
 	
-	@SuppressWarnings("unchecked")
 	public ControlView(GameModel model)
 	{
 		super("ZooVenture");
 		this.model = model;
 		this.miniMapView = new MiniMapView(model);
 		
-		
+		//create control view panels
 		//create all the directional buttons
+		JPanel buttons = createButtonPanel();
+        createStatsPanel(); 
+        createInventoryPanel();
+   
+        setLayout(new GridLayout(3,3));
+        //add to overall frame
+        // TODO: create ZooView(model, this) which will create the panels for the ZooView
+        // this will come in a later version
+        add(new JPanel()); //top left graphic component (sky)
+        add(new JPanel()); //top middle graphic component (sky)
+        add(new JPanel()); //top right graphic component (sky)
+        add(new JPanel()); //bottom left graphic component (ground)
+        add(new JPanel()); //bottom middle graphic component (ground)
+        add(new JPanel()); //bottom right graphic component (ground)
+        add(buttons);
+        add(this.inventoryScrollPane);    
+        add(this.statsPanel); 
+	
+		this.requestFocus();
+	}
+	
+	public void createInventoryPanel()
+	{
+        //creates inventory scroll pane
+        //	TODO: add scroll bar, limit number of items on the list
+        this.inventory = new JList<String>(model.getInventory());
+        this.inventory.setVisibleRowCount(4);
+        this.inventory.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        this.inventoryScrollPane = new JScrollPane(this.inventory);
+        //this.inventoryScrollPane.createVerticalScrollBar();
+        //this.inventoryScrollPane.setViewportBorder(BorderFactory.createEmptyBorder(30,15,30, 15));
+	}
+	
+	public void createStatsPanel()
+	{
+        this.health = new JLabel("HEALTH:"+ model.getHealth());
+		this.health.setOpaque(true);
+		this.health.setBackground(Color.WHITE);
+        
+		//create miniMapButton
+		this.miniMapButton = new JButton("MiniMap");
+		this.miniMapButton.setEnabled(true);
+		this.miniMapButton.setActionCommand("Open");
+		this.miniMapButton.addActionListener(this);
+		
+        this.statsPanel = new JPanel();
+        this.statsPanel.setLayout(new GridLayout(3,1));
+        this.statsPanel.add(this.health);
+        this.statsPanel.add(new JLabel());
+        this.statsPanel.add(this.miniMapButton);
+        
+        this.statsPanel.setBackground(Color.WHITE);
+	}
+	
+	public JPanel createButtonPanel()
+	{
 		JPanel buttons = new JPanel();
 		buttons.setLayout(new GridLayout(3,3));
 		//buttons.setBounds(0, 700, 200, 200);
@@ -107,58 +160,9 @@ public class ControlView extends JFrame implements ActionListener{
         buttons.setOpaque(true);   
         buttons.setBackground(Color.WHITE);
         
-        
-        // creating stats panel
-        //prints a string of the players health
-        this.health = new JLabel("HEALTH:"+ model.getHealth());
-		this.health.setOpaque(true);
-		this.health.setBackground(Color.WHITE);
-        
-		//create miniMapButton
-		this.miniMapButton = new JButton("MiniMap");
-		this.miniMapButton.setEnabled(true);
-		this.miniMapButton.setActionCommand("Open");
-		this.miniMapButton.addActionListener(this);
-		
-        this.statsPanel = new JPanel();
-        this.statsPanel.setLayout(new GridLayout(3,1));
-        this.statsPanel.add(this.health);
-        this.statsPanel.add(new JLabel());
-        this.statsPanel.add(this.miniMapButton);
-        
-        this.statsPanel.setBackground(Color.WHITE);
-        
-        
-        //creates inventory scroll pane
-        //	TODO: add scroll bar, limit number of items on the list
-        this.inventory = new JList<String>(model.getInventory());
-        this.inventory.setVisibleRowCount(4);
-        this.inventory.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        this.inventoryScrollPane = new JScrollPane(this.inventory);
-        //this.inventoryScrollPane.createVerticalScrollBar();
-        //this.inventoryScrollPane.setViewportBorder(BorderFactory.createEmptyBorder(30,15,30, 15));
-
-        
-        
-        setLayout(new GridLayout(3,3)); //, 100, 70));
-        //add to overall frame
-        // TODO: create ZooView(model, this) which will create the panels for the ZooView
-        // this will come in a later version
-        add(new JPanel()); //top left graphic component (sky)
-        add(new JPanel()); //top middle graphic component (sky)
-        add(new JPanel()); //top right graphic component (sky)
-        add(new JPanel()); //bottom left graphic component (ground)
-        add(new JPanel()); //bottom middle graphic component (ground)
-        add(new JPanel()); //bottom right graphic component (ground)
-        //
-        //
-        add(buttons);
-        add(this.inventoryScrollPane);    
-        add(this.statsPanel); 
-        
-		
-		this.requestFocus();
+        return buttons;
 	}
+	
 	
 	//updates the mini map
 	public void updateGraphics()
@@ -222,8 +226,8 @@ public class ControlView extends JFrame implements ActionListener{
 		{
 			model.changeOrientation("L");
 		}
-		
-		
+				
 		this.updateGraphics();
 	}
+
 }

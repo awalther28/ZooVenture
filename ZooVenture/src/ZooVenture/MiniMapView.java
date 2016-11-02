@@ -3,6 +3,7 @@
  */
 package ZooVenture;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.GridLayout;
@@ -10,7 +11,6 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -22,53 +22,69 @@ import javax.swing.JPanel;
  * @author allisonwalther
  *
  */
+@SuppressWarnings("serial")
 public class MiniMapView extends JFrame{
 	private GameModel model;
 	private JPanel[][] graphicBoard;
 	private JLabel[][] labelBoard;
+	private JLabel[][] indicatorBoard;
 	
 	public MiniMapView(GameModel model)
 	{ 
 		this.model = model;
 		setSize(400,400);
 		setLocation(900,300);
-		setLayout(new GridLayout(model.getY(), model.getX()));
+		GridLayout layout = new GridLayout(model.getY(), model.getX());
+		layout.setHgap(1);
+		layout.setVgap(1);
+		setLayout(layout);
+		setBackground(Color.LIGHT_GRAY);
+		
 		
 		JPanel roomGraphic = null;
 		JLabel roomLabel = null;
 		Room room = null;
 		this.graphicBoard = new JPanel[model.getY()][model.getX()];
 		this.labelBoard = new JLabel[model.getY()][model.getX()];
+		this.indicatorBoard = new JLabel[model.getY()][model.getX()];
 		for(int y = 0; y < model.getY(); y++)
 		{
 			for(int x = 0; x < model.getX(); x++)
 			{
 				roomGraphic = new JPanel();
 				roomLabel = new JLabel();
+				JLabel indicator = new JLabel();
+				roomLabel.setHorizontalAlignment(JLabel.CENTER);
+		        roomLabel.setVerticalAlignment(JLabel.CENTER);
+				roomGraphic.setLayout(new BorderLayout());
 				roomGraphic.add(roomLabel);
 				room = model.getRoom(x, y);
 				if (room.isAWall)
 				{
-					addImage(roomGraphic, roomLabel, "foliage.jpg", Color.BLACK);
+					addImage(roomGraphic, roomLabel, "foliage.jpg", Color.BLACK, new Color(9, 109, 14));
 				}
 				else if(room.getContents().size() > 0)
 				{
 					if (room.getContents().size() > 2)
 					{
-						roomGraphic.setBackground(Color.RED);
+						roomGraphic.add(indicator, BorderLayout.NORTH);
+						addImage(roomGraphic, indicator, "redSquare.png", Color.RED);
 					}
 					else if (room.getContents().size() == 2)
 					{
-						roomGraphic.setBackground(Color.GREEN);
+						roomGraphic.add(indicator, BorderLayout.NORTH);
+						addImage(roomGraphic, indicator, "greenSquare.png", Color.GREEN);
 					}
 					else if (room.getContents().size() == 1)
 					{
-						roomGraphic.setBackground(Color.DARK_GRAY);
+						roomGraphic.add(indicator, BorderLayout.NORTH);
+						addImage(roomGraphic, indicator, "blackSquare.png", Color.BLACK);
 					}
 				}
 				else
 					roomGraphic.setBackground(Color.WHITE);
 
+				this.indicatorBoard[y][x] = indicator;
 				this.graphicBoard[y][x] = roomGraphic;
 				this.labelBoard[y][x] = roomLabel;
 				add(roomGraphic);
@@ -83,6 +99,9 @@ public class MiniMapView extends JFrame{
 	{	
 		int x = model.getPlayerLocationX();
 		int y = model.getPlayerLocationY();
+		
+		updateIndicatorBoard();
+		this.indicatorBoard[y][x].setIcon(new ImageIcon("nothing"));
 		
 		switch(model.getOrientation()){
 			case("S"):
@@ -100,7 +119,59 @@ public class MiniMapView extends JFrame{
 		}
 	}
 	
+	public void updateIndicatorBoard()
+	{
+		for(int y = 0; y < model.getY(); y++)
+		{
+			for(int x = 0; x < model.getX(); x++)
+			{
+				Room room = model.getRoom(x, y);
+				if(!room.isAWall & room.getContents().size() > 0)
+				{
+					if (room.getContents().size() > 2)
+					{
+						addImage(this.graphicBoard[y][x], this.indicatorBoard[y][x], "redSquare.png", Color.RED);
+					}
+					else if (room.getContents().size() == 2)
+					{
+						addImage(this.graphicBoard[y][x], this.indicatorBoard[y][x], "greenSquare.png", Color.GREEN);
+					}
+					else if (room.getContents().size() == 1)
+					{
+						addImage(this.graphicBoard[y][x], this.indicatorBoard[y][x], "blackSquare.png", Color.BLACK);
+					}
+				}
+				else
+					this.graphicBoard[y][x].setBackground(Color.WHITE);
+			}
+		}
+	}
+	
+			
 	public void addImage(JPanel panel, JLabel label, String image, Color altColor)
+	{
+		BufferedImage img;
+		try {		
+			img = ImageIO.read(new File("src/Images/"+image));
+			Image rescaledImage = null;
+			if (panel.getWidth() == 0 & panel.getHeight() == 0)
+			{
+				rescaledImage = img.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+			}
+			else
+			{
+				// http://stackoverflow.com/questions/10634417/image-resize-to-fit-on-jpanel
+				rescaledImage = img.getScaledInstance(panel.getWidth(), panel.getHeight(), Image.SCALE_SMOOTH);
+			}
+			label.setIcon(new ImageIcon(rescaledImage));
+			panel.setBackground(Color.WHITE);
+		} catch (IOException e) {
+			System.out.println("Image was not found.");
+			label.setBackground(altColor);	
+		}
+	}
+	
+	public void addImage(JPanel panel, JLabel label, String image, Color altColor, Color backgroundColor)
 	{
 		BufferedImage img;
 		try {		
@@ -116,7 +187,7 @@ public class MiniMapView extends JFrame{
 				rescaledImage = img.getScaledInstance(panel.getWidth(), panel.getHeight(), Image.SCALE_SMOOTH);
 			}
 			label.setIcon(new ImageIcon(rescaledImage));
-			panel.setBackground(Color.WHITE);
+			panel.setBackground(backgroundColor);
 		} catch (IOException e) {
 			System.out.println("Image was not found.");
 			label.setBackground(altColor);	

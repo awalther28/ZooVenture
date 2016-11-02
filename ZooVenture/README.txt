@@ -10,9 +10,20 @@ back to their cages. When all of the animals are in their cages
 you win the game.
 
 
-Next implementations will include a MVC pattern:
-![Alt text](/relative/path/to/MVCdiagram.jpg?raw=true "Optional Title")
+UPDATE 11/01/2016:
+To move, either use the buttons. To use a hot key/shortcut for movement
+press alt+<up, down, right, or left arrow key>.
 
+The item indicator will disappear when you enter a room because you will
+be able to see what is in the room. The information about how many items
+in the room is not lost. When you exit the room, the item indicator will
+reappear, reflecting the number of items currently within the room.
+ 
+UPDATES TO COME:
+update text file so the user can decide what orientation they want the 
+player to start in
+graphics for ZooView -- will use flyweight graphics factory
+create scrollbar for inventory list & add ways to interact with inventory
 
 
 // how to write a board.txt
