@@ -9,7 +9,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -25,7 +25,7 @@ import javax.swing.ListSelectionModel;
  */
 @SuppressWarnings("serial")
 public class ControlView extends JFrame implements ActionListener{
-	//private ZooView zoo;
+	private ZooView zoo;
 	private GameModel model;
 	private MiniMapView miniMapView;
 	private JLabel health;
@@ -40,12 +40,14 @@ public class ControlView extends JFrame implements ActionListener{
 	private JScrollPane inventoryScrollPane;
 	private JPanel statsPanel;
 	private JButton miniMapButton;
+	private ArrayList<JPanel> graphicsPanels;
 	
 	public ControlView(GameModel model)
 	{
 		super("ZooVenture");
 		this.model = model;
 		this.miniMapView = new MiniMapView(model);
+        this.zoo = new ZooView(model, this);
 		
 		//create control view panels
 		//create all the directional buttons
@@ -57,12 +59,12 @@ public class ControlView extends JFrame implements ActionListener{
         //add to overall frame
         // TODO: create ZooView(model, this) which will create the panels for the ZooView
         // this will come in a later version
-        add(new JPanel()); //top left graphic component (sky)
-        add(new JPanel()); //top middle graphic component (sky)
-        add(new JPanel()); //top right graphic component (sky)
-        add(new JPanel()); //bottom left graphic component (ground)
-        add(new JPanel()); //bottom middle graphic component (ground)
-        add(new JPanel()); //bottom right graphic component (ground)
+        
+        this.graphicsPanels = this.zoo.getPanels();
+        for (int i = 0; i < this.graphicsPanels.size(); i++)
+        {
+        	add(this.graphicsPanels.get(i));
+        }
         add(buttons);
         add(this.inventoryScrollPane);    
         add(this.statsPanel); 
@@ -168,15 +170,20 @@ public class ControlView extends JFrame implements ActionListener{
 	public void updateGraphics()
 	{
 		this.miniMapView.updateMap();
-		//also update zoo panel
+		this.zoo.setPanels();
+		this.createInventoryPanel();
 	}
 	
 	//update control view
-	public void paintComponent(Graphics g)
+	@Override
+	public void paint(Graphics g)
 	{
 		super.paintComponents(g);
 		g.setColor(Color.DARK_GRAY);
+		
 		updateGraphics();
+		g.drawRect(250, 220, 70, 70);
+		
 		
 		
         try {

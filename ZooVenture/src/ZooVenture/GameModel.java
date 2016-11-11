@@ -98,6 +98,11 @@ public class GameModel {
 		return player.getInventory();
 	}
 
+	public void addInventory(ArrayList<MazeObject> stuff)
+	{
+		player.addInventory(stuff);
+	}
+	
 	/**
 	 * @return
 	 */
@@ -165,4 +170,13 @@ public class GameModel {
 				break;
 		}	
 	}
+
+	/**
+	 * @param stuff
+	 */
+	public void removeItemsFromRoom(ArrayList<MazeObject> stuff) {
+		board.board[getPlayerLocationY()][getPlayerLocationX()].removeItemsFromRoom(stuff);
+		
+	}
+
 }

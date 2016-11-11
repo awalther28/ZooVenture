@@ -9,15 +9,22 @@ package ZooVenture;
  */
 public class MazeObject {
 	String type;
+	String image;
 	
-	public MazeObject(String type)
+	public MazeObject(String type, String image)
 	{
 		this.type = type;
+		this.image = image;
 	}
 	
 	public String getType()
 	{
 		return this.type;
+	}
+	
+	public String getImage()
+	{
+		return this.image;
 	}
 	
 	@Override

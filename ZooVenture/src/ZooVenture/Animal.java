@@ -17,7 +17,7 @@ public class Animal extends MazeObject {
 	Tuple habitat;
 	
 	public Animal(String name, String hp, String strength, String dest, String liveImage, String sedatedImage) {
-		super("animal");
+		super("animal", liveImage);
 		this.name = name;
 		this.hp = Integer.parseInt(hp);
 		this.strength = Integer.parseInt(strength);

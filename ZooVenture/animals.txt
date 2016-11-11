@@ -3,12 +3,12 @@ Tiger
 70
 10
 1,2
-live.txt
+tiger.png
 ko.txt
 1,2
 Bear
 100
 20
 2,2
-live.txt
+water.png
 ko.txt

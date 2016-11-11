@@ -27,7 +27,7 @@ public class Player {
 	
 	public String[] getInventory()
 	{
-		String[] list = {"Tiger", "Lion", "Water", "PowerBar", "Water"};
+		String[] list = new String[this.inventory.size()];
 		for(int i = 0; i < this.inventory.size(); i++)
 		{
 			list[i] = this.inventory.get(i).toString();
@@ -40,6 +40,14 @@ public class Player {
 	 */
 	public String getHealth() {
 		return String.valueOf(this.hp);
+	}
+
+	/**
+	 * @param stuff
+	 */
+	public void addInventory(ArrayList<MazeObject> stuff) {
+		this.inventory.addAll(stuff);
+		
 	}
 	
 }

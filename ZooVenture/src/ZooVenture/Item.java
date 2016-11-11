@@ -16,7 +16,7 @@ public class Item extends MazeObject{
 	
 	
 	public Item(String name, String effect, String image) {
-		super("item");
+		super("item", image);
 		
 		this.name = name;
 		

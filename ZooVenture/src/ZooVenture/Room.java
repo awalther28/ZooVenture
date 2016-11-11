@@ -44,4 +44,12 @@ public class Room {
 		else
 			return " ";
 	}
+
+	/**
+	 * @param stuff
+	 */
+	public void removeItemsFromRoom(ArrayList<MazeObject> stuff) {
+		this.contents.removeAll(stuff);
+		
+	}
 }
