@@ -6,9 +6,9 @@ Tiger
 tiger.png
 ko.txt
 1,2
-Bear
+Lion
 100
 20
 2,2
-water.png
+lion.png
 ko.txt

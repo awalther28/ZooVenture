@@ -98,7 +98,17 @@ public class ZooView extends JFrame {
 					p.removeAll();
 					panels.remove(4);
 					panels.add(4, p);
+					
+					int x = model.getPlayerLocationX();
+					int y = model.getPlayerLocationY();
+					ArrayList<MazeObject> stuff = model.getRoom(x,y).getContents();
 					model.addInventory(stuff);
+					String[] list = new String[stuff.size()];
+					for(int i = 0; i < stuff.size(); i++)
+					{
+						list[i] = stuff.get(i).toString();
+					}
+					view.updateInventory(list);
 					model.removeItemsFromRoom(stuff);
 				}
 				

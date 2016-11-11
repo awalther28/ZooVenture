@@ -30,7 +30,7 @@ public class Animal extends MazeObject {
 	@Override
 	public String toString()
 	{
-		return this.name+" "+this.hp+" "+this.strength;
+		return this.name;
 	}
 	
 }

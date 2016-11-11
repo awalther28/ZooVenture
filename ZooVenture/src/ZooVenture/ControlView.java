@@ -9,7 +9,9 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -56,9 +58,6 @@ public class ControlView extends JFrame implements ActionListener{
         createInventoryPanel();
    
         setLayout(new GridLayout(3,3));
-        //add to overall frame
-        // TODO: create ZooView(model, this) which will create the panels for the ZooView
-        // this will come in a later version
         
         this.graphicsPanels = this.zoo.getPanels();
         for (int i = 0; i < this.graphicsPanels.size(); i++)
@@ -171,9 +170,13 @@ public class ControlView extends JFrame implements ActionListener{
 	{
 		this.miniMapView.updateMap();
 		this.zoo.setPanels();
-		this.createInventoryPanel();
+		//this.updateInventory();
 	}
 	
+	public void updateInventory(String[] list)
+	{
+		this.inventory.setListData(model.getInventory());
+	}
 	//update control view
 	@Override
 	public void paint(Graphics g)
