@@ -46,10 +46,17 @@ public class Room {
 	}
 
 	/**
-	 * @param stuff
+	 * @param arraylist removes items from room
 	 */
 	public void removeItemsFromRoom(ArrayList<MazeObject> stuff) {
 		this.contents.removeAll(stuff);
 		
+	}
+
+	/**
+	 * @param mazeobject to be added to room
+	 */
+	public void addItemToRoom(MazeObject obj) {
+		this.contents.add(obj);	
 	}
 }

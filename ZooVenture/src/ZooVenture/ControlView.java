@@ -9,9 +9,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -165,30 +163,27 @@ public class ControlView extends JFrame implements ActionListener{
 	}
 	
 	
-	//updates the mini map
+	//updates the mini map and sets the graphics panels
 	public void updateGraphics()
 	{
 		this.miniMapView.updateMap();
 		this.zoo.setPanels();
-		//this.updateInventory();
+		this.health.setText(("HEALTH:"+ model.getHealth()));
+		this.updateInventory();
 	}
 	
-	public void updateInventory(String[] list)
+	public void updateInventory()
 	{
 		this.inventory.setListData(model.getInventory());
 	}
+	
 	//update control view
 	@Override
 	public void paint(Graphics g)
 	{
 		super.paintComponents(g);
 		g.setColor(Color.DARK_GRAY);
-		
-		updateGraphics();
-		g.drawRect(250, 220, 70, 70);
-		
-		
-		
+		updateGraphics();		
         try {
             Thread.sleep(20);
             this.repaint();
@@ -238,6 +233,24 @@ public class ControlView extends JFrame implements ActionListener{
 		}
 				
 		this.updateGraphics();
+	}
+	
+	public void registerListener(InventoryListener listener)
+	{
+		this.inventory.addListSelectionListener(listener);
+	}
+
+	/**
+	 * @returns null if no object is selected from the inventory list otherwise returns object
+	 * of item in inventory list
+	 */
+	public MazeObject getSelectedObejct() {
+		int index = this.inventory.getSelectedIndex();
+		if(index != -1)
+		{
+			return model.getItemInInventory(index);
+		}
+		return null;
 	}
 
 }

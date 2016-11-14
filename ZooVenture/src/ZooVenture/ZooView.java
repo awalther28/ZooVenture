@@ -4,21 +4,12 @@
 package ZooVenture;
 
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
-import javax.swing.Box;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
 /**
@@ -40,7 +31,6 @@ public class ZooView extends JFrame {
 	private static final String R_WALL = "rWall.png";
 	private static final String C_OPEN = "cOpen.png";
 	private static final String C_WALL = "cWall.png";
-	private static final String C_FLOOR = "cFloor.png";
 	ArrayList<JPanel> panels;
 	ArrayList<JLabel> labels;
  	GameModel model;
@@ -64,13 +54,14 @@ public class ZooView extends JFrame {
 		}
 		
 		this.setPanels();
-		//this.setAnimals();
 	}
 
 	public ArrayList<JPanel> getPanels()
 	{
 		return this.panels;
 	}
+	
+	
 	@SuppressWarnings("static-access")
 	public void setPanels()
 	{
@@ -86,7 +77,7 @@ public class ZooView extends JFrame {
 		ArrayList<MazeObject> stuff = room.getContents();
 		for(int i = 0; i < stuff.size(); i++)
 		{
-			JLabel obj = new JLabel(GraphicsFactory.getMazeObjectGraphic(stuff.get(i).getImage(), 0, 0));
+			JLabel obj = new JLabel(GraphicsFactory.getMazeObjectGraphic(stuff.get(i).getImage()));
 			p.add(obj);
 		}
 		p.addMouseListener(new MouseAdapter() {
@@ -103,12 +94,7 @@ public class ZooView extends JFrame {
 					int y = model.getPlayerLocationY();
 					ArrayList<MazeObject> stuff = model.getRoom(x,y).getContents();
 					model.addInventory(stuff);
-					String[] list = new String[stuff.size()];
-					for(int i = 0; i < stuff.size(); i++)
-					{
-						list[i] = stuff.get(i).toString();
-					}
-					view.updateInventory(list);
+					view.updateInventory();
 					model.removeItemsFromRoom(stuff);
 				}
 				
@@ -397,35 +383,7 @@ public class ZooView extends JFrame {
 					break;
 			}			
 		}
-	
-	public void setAnimals()
-	{
-		int x = this.model.getPlayerLocationX();
-		int y = this.model.getPlayerLocationY();
-		Room room = this.model.getRoom(x, y);
-		ArrayList<MazeObject> stuff = room.getContents();
-		
-		JLabel item;
-		JPanel panel;
-		JLayeredPane layer;
-		for (int i = 0; i < stuff.size(); i++)
-		{
-			item = new JLabel();
-			item.setIcon(GraphicsFactory.getMazeObjectGraphic(stuff.get(i).getImage(), 40, 40));
-			item.setOpaque(false);
-			item.setBounds(350, 350, item.getWidth(), item.getHeight());
-			panel = this.panels.get(4);
-			JPanel p = new JPanel();
-			panel.add(item);
-			
-			this.labels.remove(4);
-			this.labels.add(4, item);
-			this.panels.remove(4);
-			this.panels.add(4, panel);
-		}
-	}
 
-	
 	}
 	
 

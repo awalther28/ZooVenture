@@ -32,5 +32,39 @@ public class Animal extends MazeObject {
 	{
 		return this.name;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Animal other = (Animal) obj;
+		if (habitat == null) {
+			if (other.habitat != null)
+				return false;
+		} else if (!habitat.equals(other.habitat))
+			return false;
+		if (liveImage == null) {
+			if (other.liveImage != null)
+				return false;
+		} else if (!liveImage.equals(other.liveImage))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (sedatedImage == null) {
+			if (other.sedatedImage != null)
+				return false;
+		} else if (!sedatedImage.equals(other.sedatedImage))
+			return false;
+		if (strength != other.strength)
+			return false;
+		return true;
+	}
 	
 }

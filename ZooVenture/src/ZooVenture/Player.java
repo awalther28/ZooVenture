@@ -1,9 +1,6 @@
 package ZooVenture;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.ListModel;
 
 /**
  * 
@@ -25,6 +22,8 @@ public class Player {
 		this.inventory = new ArrayList<MazeObject>();
 	}
 	
+	//returns string array of inventory
+	//used for setting the JList
 	public String[] getInventory()
 	{
 		String[] list = new String[this.inventory.size()];
@@ -36,18 +35,40 @@ public class Player {
 	}
 
 	/**
-	 * @return
+	 * @returns string of hp
 	 */
 	public String getHealth() {
 		return String.valueOf(this.hp);
 	}
 
 	/**
-	 * @param stuff
+	 * @param array list of MazeObjects to be added to inventory
 	 */
 	public void addInventory(ArrayList<MazeObject> stuff) {
 		this.inventory.addAll(stuff);
-		
+	}
+	
+	public void removeInventoryItem(MazeObject object)
+	{
+		this.inventory.remove(object);
+	}
+	
+	public MazeObject getItemInInventory(int index)
+	{
+		return this.inventory.get(index);
+	}
+
+	/**
+	 * @param int
+	 */
+	public void setHP(int num) {
+		this.hp = this.hp + num;
+	}
+	
+	//returns int
+	public int getHP()
+	{
+		return this.hp;
 	}
 	
 }

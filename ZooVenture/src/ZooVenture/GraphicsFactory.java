@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.Hashtable;
 
 import javax.imageio.ImageIO;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 /**
@@ -54,14 +53,13 @@ public class GraphicsFactory {
 	 * @param image
 	 * @return
 	 */
-	public static ImageIcon getMazeObjectGraphic(String image, int x, int y) {
+	public static ImageIcon getMazeObjectGraphic(String image) {
 		BufferedImage img;
 		try {		
 			img = ImageIO.read(new File("src/Images/"+image));
-			//Image rescaledImage = null;
-			//rescaledImage = img.getScaledInstance(x, y, Image.SCALE_SMOOTH);
-			return new ImageIcon(img); //rescaledImage);
-			//return img;
+			Image rescaledImage = null;
+			rescaledImage = img.getScaledInstance(img.getWidth()/5, img.getHeight()/5, Image.SCALE_SMOOTH);
+			return new ImageIcon(rescaledImage);
 		} catch (IOException e) {
 			System.out.println("Image was not found.");
 			return null;

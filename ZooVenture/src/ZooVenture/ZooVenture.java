@@ -21,6 +21,8 @@ public class ZooVenture {
 	public static void main(String[] args) throws IOException {
 		GameModel model = new GameModel("board.txt", "animals.txt", "items.txt");
 		ControlView view = new ControlView(model);
+		InventoryListener inventoryListener = new InventoryListener(model, view);
+		view.registerListener(inventoryListener);
 		//RepaintController repaintController = new RepaintController(model, view);
 		
 		

@@ -6,7 +6,6 @@ package ZooVenture;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.swing.ListModel;
 
 /**
  * @author allisonwalther
@@ -175,7 +174,33 @@ public class GameModel {
 	 * @param stuff
 	 */
 	public void removeItemsFromRoom(ArrayList<MazeObject> stuff) {
-		board.board[getPlayerLocationY()][getPlayerLocationX()].removeItemsFromRoom(stuff);
+		board.board[getPlayerLocationY()][getPlayerLocationX()].removeItemsFromRoom(stuff);	
+	}
+
+	public void removeItemFromInventory(MazeObject object)
+	{
+		player.removeInventoryItem(object);
+	}
+	/**
+	 * @param index
+	 * @return
+	 */
+	public MazeObject getItemInInventory(int index) {
+		return player.getItemInInventory(index);
+	}
+
+	/**
+	 * @param effectValue
+	 */
+	public void increaseHP(int effectValue) {
+		player.setHP(effectValue);
+	}
+
+	/**
+	 * @param obj
+	 */
+	public void addItemToRoom(MazeObject obj) {
+		board.board[getPlayerLocationY()][getPlayerLocationX()].addItemToRoom(obj);
 		
 	}
 
