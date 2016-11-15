@@ -49,14 +49,26 @@ public class Room {
 	 * @param arraylist removes items from room
 	 */
 	public void removeItemsFromRoom(ArrayList<MazeObject> stuff) {
-		this.contents.removeAll(stuff);
-		
+		this.contents.removeAll(stuff);	
 	}
 
+	
 	/**
 	 * @param mazeobject to be added to room
 	 */
 	public void addItemToRoom(MazeObject obj) {
 		this.contents.add(obj);	
+	}
+
+	/**
+	 * @return
+	 */
+	public int containsLiveAnimal() {
+		for (int i = 0; i < this.contents.size(); i++)
+		{
+			if(this.contents.get(i).type.equals("animal"))
+				return i;
+		}
+		return -1;
 	}
 }

@@ -32,9 +32,8 @@ public class InventoryListener implements ListSelectionListener {
 				return;
 			}
 			
-			if(obj.getType().equals("animal"))
+			if(obj.getType().equals("sedated animal"))
 			{
-				System.out.println(obj.getImage());
 				this.model.addItemToRoom(obj);
 				this.model.removeItemFromInventory(obj);
 				this.view.updateGraphics();
@@ -48,6 +47,11 @@ public class InventoryListener implements ListSelectionListener {
 				{
 				case("Increase HP"):
 					this.model.increaseHP(effectValue);
+					this.model.removeItemFromInventory(obj);
+					this.view.updateGraphics();
+					break;
+				case("Increase Strength"):
+					this.model.increaseStrength(effectValue);
 					this.model.removeItemFromInventory(obj);
 					this.view.updateGraphics();
 					break;

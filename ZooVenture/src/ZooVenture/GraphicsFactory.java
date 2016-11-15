@@ -27,7 +27,7 @@ public class GraphicsFactory {
 	public static ImageIcon getGraphic(String string) {
 		if(!images.containsKey(string))
 		{
-			images.put(string, getImage(string));
+			images.put(string, getPanelGraphic(string));
 		}
 		return images.get(string);
 	}
@@ -36,7 +36,7 @@ public class GraphicsFactory {
 	 * @param string
 	 * @return null if no image was found in system else returns ImageIcon 
 	 */
-	private static ImageIcon getImage(String string) {
+	private static ImageIcon getPanelGraphic(String string) {
 		BufferedImage img;
 		try {		
 			img = ImageIO.read(new File("src/Images/"+string));
@@ -60,6 +60,17 @@ public class GraphicsFactory {
 			Image rescaledImage = null;
 			rescaledImage = img.getScaledInstance(img.getWidth()/5, img.getHeight()/5, Image.SCALE_SMOOTH);
 			return new ImageIcon(rescaledImage);
+		} catch (IOException e) {
+			System.out.println("Image was not found.");
+			return null;
+		}
+	}
+	
+	public static ImageIcon getOriginalImage(String image) {
+		BufferedImage img;
+		try {		
+			img = ImageIO.read(new File("src/Images/"+image));
+			return new ImageIcon(img);
 		} catch (IOException e) {
 			System.out.println("Image was not found.");
 			return null;

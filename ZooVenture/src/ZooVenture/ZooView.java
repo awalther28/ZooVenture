@@ -93,7 +93,7 @@ public class ZooView extends JFrame {
 					int x = model.getPlayerLocationX();
 					int y = model.getPlayerLocationY();
 					ArrayList<MazeObject> stuff = model.getRoom(x,y).getContents();
-					model.addInventory(stuff);
+					model.addAllInventory(stuff);
 					view.updateInventory();
 					model.removeItemsFromRoom(stuff);
 				}

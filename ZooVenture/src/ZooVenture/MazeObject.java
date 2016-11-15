@@ -22,6 +22,11 @@ public class MazeObject {
 		return this.type;
 	}
 	
+	public void setType(String type)
+	{
+		this.type = type;
+	}
+	
 	public String getImage()
 	{
 		return this.image;

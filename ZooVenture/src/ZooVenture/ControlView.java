@@ -3,7 +3,9 @@
  */
 package ZooVenture;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -29,6 +31,7 @@ public class ControlView extends JFrame implements ActionListener{
 	private GameModel model;
 	private MiniMapView miniMapView;
 	private JLabel health;
+	private JLabel strength;
 	private JList<String> inventory;
 	private JButton rotateLeft;
 	//move directions
@@ -37,10 +40,12 @@ public class ControlView extends JFrame implements ActionListener{
 	private JButton moveLeft;
 	private JButton moveBackward;
 	private JButton moveRight;
+	private JButton attack;
 	private JScrollPane inventoryScrollPane;
 	private JPanel statsPanel;
 	private JButton miniMapButton;
 	private ArrayList<JPanel> graphicsPanels;
+	private JPanel buttons;
 	
 	public ControlView(GameModel model)
 	{
@@ -51,7 +56,7 @@ public class ControlView extends JFrame implements ActionListener{
 		
 		//create control view panels
 		//create all the directional buttons
-		JPanel buttons = createButtonPanel();
+		this.buttons = createButtonPanel();
         createStatsPanel(); 
         createInventoryPanel();
    
@@ -62,7 +67,7 @@ public class ControlView extends JFrame implements ActionListener{
         {
         	add(this.graphicsPanels.get(i));
         }
-        add(buttons);
+        add(this.buttons);
         add(this.inventoryScrollPane);    
         add(this.statsPanel); 
 	
@@ -87,6 +92,10 @@ public class ControlView extends JFrame implements ActionListener{
 		this.health.setOpaque(true);
 		this.health.setBackground(Color.WHITE);
         
+		this.strength = new JLabel("STRENGTH:" + model.getStrength());
+		this.strength.setOpaque(true);
+		this.strength.setBackground(Color.WHITE);
+		
 		//create miniMapButton
 		this.miniMapButton = new JButton("MiniMap");
 		this.miniMapButton.setEnabled(true);
@@ -96,7 +105,7 @@ public class ControlView extends JFrame implements ActionListener{
         this.statsPanel = new JPanel();
         this.statsPanel.setLayout(new GridLayout(3,1));
         this.statsPanel.add(this.health);
-        this.statsPanel.add(new JLabel());
+        this.statsPanel.add(this.strength);
         this.statsPanel.add(this.miniMapButton);
         
         this.statsPanel.setBackground(Color.WHITE);
@@ -116,6 +125,7 @@ public class ControlView extends JFrame implements ActionListener{
         this.moveLeft = new JButton("Left");
         this.moveBackward = new JButton("Backward");
         this.moveRight = new JButton("Right"); 
+        this.attack = new JButton("<html><center>Sedate<br/>Animal</center></html>");
         
         //enable all the buttons
         this.rotateLeft.setEnabled(true);
@@ -130,6 +140,11 @@ public class ControlView extends JFrame implements ActionListener{
         this.moveLeft.setActionCommand("W");
         this.moveLeft.addActionListener(this);
         this.moveLeft.setMnemonic(KeyEvent.VK_LEFT);
+        
+        this.attack.setEnabled(true);
+        this.attack.setActionCommand("attack");
+        this.attack.addActionListener(this);
+        this.attack.setMnemonic(KeyEvent.VK_SPACE);
         
         this.moveRight.setEnabled(true);
         this.moveRight.setActionCommand("E");
@@ -150,7 +165,7 @@ public class ControlView extends JFrame implements ActionListener{
         buttons.add(this.moveForward);
         buttons.add(this.rotateRight);
         buttons.add(this.moveLeft);
-        buttons.add(new JLabel());
+        buttons.add(this.attack);
         buttons.add(this.moveRight);
         buttons.add(new JLabel());
         buttons.add(this.moveBackward);
@@ -168,13 +183,18 @@ public class ControlView extends JFrame implements ActionListener{
 	{
 		this.miniMapView.updateMap();
 		this.zoo.setPanels();
-		this.health.setText(("HEALTH:"+ model.getHealth()));
 		this.updateInventory();
+		this.updateHealth();
+	}
+	
+	public void updateHealth()
+	{
+		this.health.setText(("HEALTH:"+ this.model.getHealth()));	
 	}
 	
 	public void updateInventory()
 	{
-		this.inventory.setListData(model.getInventory());
+		this.inventory.setListData(this.model.getInventory());
 	}
 	
 	//update control view
@@ -231,8 +251,54 @@ public class ControlView extends JFrame implements ActionListener{
 		{
 			model.changeOrientation("L");
 		}
+		if(action.equals("attack"))
+		{
+			this.checkRoom();
+		}
 				
 		this.updateGraphics();
+	}
+	
+	public void checkRoom()
+	{
+		int animalIndex = model.checkForAnimal();
+		if(animalIndex > -1)
+		{
+			this.animalEncounter(animalIndex);
+		}
+	}
+	public void animalEncounter(int animalIndex)
+	{
+		int keepGoing = model.animalEncounter(animalIndex);
+		this.updateHealth();
+		if (keepGoing == 0)
+		{
+			//you lost the game
+			//remove items from frame and inform player that they lost
+			remove(this.buttons);
+	        remove(this.inventoryScrollPane);    
+	        remove(this.statsPanel); 
+	        
+	        for (int i = 0; i < this.graphicsPanels.size(); i++)
+	        {
+	        	remove(this.graphicsPanels.get(i));
+	        }
+
+	        getContentPane().setBackground(Color.BLACK);
+			setLayout(new BorderLayout());
+			JLabel lost = new JLabel(); //"You lost...");
+			lost.setIcon(GraphicsFactory.getOriginalImage("lost.png"));
+			lost.setHorizontalAlignment(JLabel.CENTER);
+			lost.setVerticalAlignment(JLabel.CENTER);
+			add(lost, BorderLayout.CENTER);
+		}
+		else if (keepGoing == -1)
+		{
+			model.sedateAnimal(animalIndex);
+		}
+		
+		this.updateGraphics();
+		
 	}
 	
 	public void registerListener(InventoryListener listener)

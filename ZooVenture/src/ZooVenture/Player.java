@@ -17,8 +17,8 @@ public class Player {
 	
 	public Player()
 	{
-		this.hp = 100;
-		this.strength = 10;
+		this.hp = 0;
+		this.strength = 50;
 		this.inventory = new ArrayList<MazeObject>();
 	}
 	
@@ -37,14 +37,19 @@ public class Player {
 	/**
 	 * @returns string of hp
 	 */
-	public String getHealth() {
+	public String getHPString() {
 		return String.valueOf(this.hp);
+	}
+	
+	public String getStrengthString()
+	{
+		return String.valueOf(this.strength);
 	}
 
 	/**
 	 * @param array list of MazeObjects to be added to inventory
 	 */
-	public void addInventory(ArrayList<MazeObject> stuff) {
+	public void addAllInventory(ArrayList<MazeObject> stuff) {
 		this.inventory.addAll(stuff);
 	}
 	
@@ -61,7 +66,7 @@ public class Player {
 	/**
 	 * @param int
 	 */
-	public void setHP(int num) {
+	public void updateHP(int num) {
 		this.hp = this.hp + num;
 	}
 	
@@ -69,6 +74,20 @@ public class Player {
 	public int getHP()
 	{
 		return this.hp;
+	}
+
+	/**
+	 * @param effectValue
+	 */
+	public void updateStrength(int effectValue) {
+		this.strength += effectValue;
+	}
+
+	/**
+	 * @param object
+	 */
+	public void addInventory(MazeObject object) {
+		this.inventory.add(object);		
 	}
 	
 }

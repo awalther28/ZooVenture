@@ -1,7 +1,7 @@
 2,2
 Tiger
 70
-10
+40
 1,2
 tiger.png
 ko.txt
@@ -15,7 +15,7 @@ ko.txt
 2,2
 Elephant
 70
-10
+60
 1,2
 elephant.png
 ko.txt

@@ -40,7 +40,7 @@ WWWWW
 
 x,y //where the item is located
 <name of the item>
-Increase HP:<int value> or Increase Damage:<int value> or None
+Increase HP:<int value> or Increase Strength:<int value> or None
 <image file name>
 
 

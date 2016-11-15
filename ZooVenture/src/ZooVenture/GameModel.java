@@ -27,7 +27,28 @@ public class GameModel {
 	{
 		String adjDirection = adjustMoveDirection(direction);
 		board.move(adjDirection);
-		System.out.println(board.toString());
+	}
+	
+	/**
+	 * @return -1 if no live animals; else returns the index of where the animal 
+	 * is in the room contents array
+	 */
+	public int checkForAnimal()
+	{
+		return board.board[getPlayerLocationY()][getPlayerLocationX()].containsLiveAnimal();	
+	}
+	
+	/**
+	 * turns normal animal into sedated animal; adds to player's inventory
+	 * @param index of animal whose health is less than 0
+	 * 
+	 */
+	public void sedateAnimal(int index)
+	{
+		Animal animal = (Animal) board.board[getPlayerLocationY()][getPlayerLocationX()].contents.get(index);
+		board.board[getPlayerLocationY()][getPlayerLocationX()].contents.remove(index);
+		animal.setType("sedated animal");
+		addInventory(animal);
 	}
 	
 	/**
@@ -69,26 +90,38 @@ public class GameModel {
 		}			
 		return null;
 	}
+	
+	/**
+	 * * simulates one attack
+	 * @param index of the animal that is to be attacked
+	 * @return 1 if both player and animal are alive; 0 if player is dead; -1 if animal is dead
+	 */
+	public int animalEncounter(int index)
+	{
+		Animal animal = (Animal) board.board[getPlayerLocationY()][getPlayerLocationX()].contents.get(index);
+		if(animal.strength > player.strength)
+		{
+			player.hp -= (animal.strength - player.strength);
+			animal.hp -= 5;
+		}
+		else
+		{
+			animal.hp -= (player.strength - animal.strength);
+			player.hp -= 5;
+		}
+		
+		System.out.println("Animal HP: " + animal.hp);
+		
+		if (player.hp >= 0 & animal.hp >= 0)
+		{
+			return 1;
+		}
+		else if (player.hp < 0)
+			return 0;
+		else
+			return -1;
+	}
 
-	public void rotate(String direction)
-	{
-		//TODO tonight if time
-	}
-	
-	public void removeItemFromRoom(String item) 
-	{
-		//TODO
-	}
-	
-	public void animalEncounter()
-	{
-		//TODO
-	}
-	
-	public void addItemToInventory()
-	{
-		//TODO
-	}
 
 	/**
 	 * @return
@@ -97,16 +130,21 @@ public class GameModel {
 		return player.getInventory();
 	}
 
-	public void addInventory(ArrayList<MazeObject> stuff)
+	public void addAllInventory(ArrayList<MazeObject> stuff)
 	{
-		player.addInventory(stuff);
+		player.addAllInventory(stuff);
+	}
+	
+	public void addInventory(MazeObject object)
+	{
+		player.addInventory(object);
 	}
 	
 	/**
 	 * @return
 	 */
 	public String getHealth() {
-		return player.getHealth();
+		return player.getHPString();
 	}
 	
 	public int getX()
@@ -181,27 +219,33 @@ public class GameModel {
 	{
 		player.removeInventoryItem(object);
 	}
-	/**
-	 * @param index
-	 * @return
-	 */
+
+	
 	public MazeObject getItemInInventory(int index) {
 		return player.getItemInInventory(index);
 	}
 
-	/**
-	 * @param effectValue
-	 */
+
 	public void increaseHP(int effectValue) {
-		player.setHP(effectValue);
+		player.updateHP(effectValue);
 	}
 
-	/**
-	 * @param obj
-	 */
+
 	public void addItemToRoom(MazeObject obj) {
 		board.board[getPlayerLocationY()][getPlayerLocationX()].addItemToRoom(obj);
 		
+	}
+
+
+	public void increaseStrength(int effectValue) {
+		player.updateStrength(effectValue);
+	}
+
+	/**
+	 * @return
+	 */
+	public String getStrength() {
+		return player.getHPString();
 	}
 
 }

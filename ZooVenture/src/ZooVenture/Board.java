@@ -113,86 +113,86 @@ public class Board {
 	}
 	
 	//prints out maze FOR DEV USE ONLY
-			@Override
-			public String toString()
+	@Override
+	public String toString()
+	{
+		int py = this.playerLocation.y;
+		int px = this.playerLocation.x;
+		String devLines = "";
+		String line = "";
+		for (int l = 0; l < this.y; l ++)
+		{
+			for (int i = 0; i < this.x; i++)
 			{
-				int py = this.playerLocation.y;
-				int px = this.playerLocation.x;
-				String devLines = "";
-				String line = "";
-				for (int l = 0; l < this.y; l ++)
+				if (l == py & i == px)
 				{
-					for (int i = 0; i < this.x; i++)
-					{
-						if (l == py & i == px)
-						{
-							devLines+= "U";
-						}
-						else
-							devLines+= this.board[l][i].toString();	
-					}
-					line = line + devLines + "\n";
-					devLines = "";
+					devLines+= "U";
 				}
-				return line;
+				else
+					devLines+= this.board[l][i].toString();	
 			}
+			line = line + devLines + "\n";
+			devLines = "";
+		}
+		return line;
+	}
 
-			public void move(String direction) {
-				int py = this.playerLocation.y;
-				int px = this.playerLocation.x;
-				switch (direction)
+	public void move(String direction) {
+		int py = this.playerLocation.y;
+		int px = this.playerLocation.x;
+		switch (direction)
+		{
+		case "N":
+			if (py -1 > -1)
+			{
+				if (!board[(py-1)][px].isAWall)
 				{
-				case "N":
-					if (py -1 > -1)
-					{
-						if (!board[(py-1)][px].isAWall)
-						{
-							this.playerLocation = new Tuple((py-1), px);		
-						}
-						else 
-							System.out.println("Sorry--there is a wall. \n\n");
-					}
-					else 
-						System.out.println("Sorry--you have reached the edge of the zoo. \n\n");
-					break;
-				case "S":
-					if (py +1 < this.y)
-					{
-						if (!board[(py+1)][px].isAWall)
-						{
-							this.playerLocation = new Tuple((py+1), px);
-						}
-						else 
-							System.out.println("Sorry--there is a wall. \n\n");
-					}
-					else 
-						System.out.println("Sorry--you have reached the edge of the zoo. \n\n");
-					break;
-				case "E":
-					if (px+1 < this.x)
-					{
-						if (!board[py][px+1].isAWall)
-						{
-							this.playerLocation = new Tuple(py, px+1);
-						}
-						else 
-							System.out.println("Sorry--there is a wall. \n\n");
-					}
-					else 
-						System.out.println("Sorry--you have reached the edge of the zoo. \n\n");
-					break;
-				case "W":
-					if (px-1 > -1)
-					{
-						if (!board[py][px-1].isAWall)
-						{
-							this.playerLocation = new Tuple(py, px-1);
-						}
-						else 
-							System.out.println("Sorry--there is a wall. \n\n");
-					}
-					else 
-						System.out.println("Sorry--you have reached the edge of the zoo. \n\n");
+					this.playerLocation = new Tuple((py-1), px);		
+				}
+				else 
+					System.out.println("Sorry--there is a wall. \n\n");
+			}
+			else 
+				System.out.println("Sorry--you have reached the edge of the zoo. \n\n");
+			break;
+		case "S":
+			if (py +1 < this.y)
+			{
+				if (!board[(py+1)][px].isAWall)
+				{
+					this.playerLocation = new Tuple((py+1), px);
+				}
+				else 
+					System.out.println("Sorry--there is a wall. \n\n");
+			}
+			else 
+				System.out.println("Sorry--you have reached the edge of the zoo. \n\n");
+			break;
+		case "E":
+			if (px+1 < this.x)
+			{
+				if (!board[py][px+1].isAWall)
+				{
+					this.playerLocation = new Tuple(py, px+1);
+				}
+				else 
+					System.out.println("Sorry--there is a wall. \n\n");
+			}
+			else 
+				System.out.println("Sorry--you have reached the edge of the zoo. \n\n");
+			break;
+		case "W":
+			if (px-1 > -1)
+			{
+				if (!board[py][px-1].isAWall)
+				{
+					this.playerLocation = new Tuple(py, px-1);
+				}
+				else 
+					System.out.println("Sorry--there is a wall. \n\n");
+			}
+			else 
+				System.out.println("Sorry--you have reached the edge of the zoo. \n\n");
 					break;
 				}
 				
