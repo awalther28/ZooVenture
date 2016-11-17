@@ -1,8 +1,13 @@
 package ZooVenture;
+
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 /**
  * 
@@ -18,6 +23,7 @@ public class Board {
 	int y;
 	Room[][] board;
 	Tuple playerLocation;
+	Hashtable<Tuple, ArrayList<Animal>> habitatDirectory;
 	
 	public Board(String boardText, String animalText, String itemText) throws IOException {
 		try 
@@ -28,6 +34,8 @@ public class Board {
 			String[] coordinates = stream.readLine().split(",");
 			this.x = Integer.parseInt(coordinates[0]);
 			this.y = Integer.parseInt(coordinates[1]);
+			
+			this.habitatDirectory = new Hashtable<Tuple, ArrayList<Animal>>();
 			
 		    this.board = new Room[this.y][this.x];
 			
@@ -91,12 +99,31 @@ public class Board {
 			BufferedReader stream = new BufferedReader(fileReader);
 		
 			String s = stream.readLine();
+			Animal animal;
+			Tuple habitat;
 			while(s != null)
 			{
 				String[] coordinates = s.split(",");
 				int xCoord = Integer.parseInt(coordinates[0]);
-				int yCoord = Integer.parseInt(coordinates[1]);			
-				this.board[yCoord][xCoord].setContents(new Animal(stream.readLine(), stream.readLine(), stream.readLine(), stream.readLine(), stream.readLine(), stream.readLine()));
+				int yCoord = Integer.parseInt(coordinates[1]);	
+				animal = new Animal(stream.readLine(), stream.readLine(), stream.readLine(), stream.readLine(), stream.readLine(), stream.readLine());
+				this.board[yCoord][xCoord].setContents(animal);
+				habitat = animal.getHabitat();
+				//add animal to habitat
+				if (this.habitatDirectory.containsKey(habitat))
+				{
+					ArrayList<Animal> list = this.habitatDirectory.get(habitat);
+					list.add(animal);
+					this.habitatDirectory.put(habitat, list);
+				}
+				//create new habitat if one did not already exist
+				else
+				{
+					ArrayList<Animal> list = new ArrayList<Animal>();
+					list.add(animal);
+					this.habitatDirectory.put(habitat, list);
+					this.board[habitat.getFirst()][habitat.getSecond()].isAHabitat = true;
+				}
 				s = stream.readLine();
 			}
 				
@@ -196,6 +223,50 @@ public class Board {
 					break;
 				}
 				
-			} 
+			}
+
+
+	/** 
+	 * parameter: HashTable of room, item pair
+	 * checks the rooms listed in the hashtable to see if they have all the animals
+	 * returns true if all of the rooms contain all of the necessary items
+	 * otherwise returns false 
+	 */
+	public Boolean checkHabitats() {
+		Enumeration<Tuple> allHabitats = this.habitatDirectory.keys();
+		boolean booleanArray[] = new boolean[this.habitatDirectory.size()]; 
+		int i = 0;
+		while(allHabitats.hasMoreElements())
+		{
+			Tuple room = allHabitats.nextElement();
+			int y = room.getFirst();
+			int x = room.getSecond();
+			ArrayList<Animal> animals = this.habitatDirectory.get(room);
+			booleanArray[i] = board[y][x].containsItems(animals);
+			if(booleanArray[i])
+			{
+				animals.get(0).setSilhouetteImage(animals.get(0).getImage());
+			}
+			i++;
+		}
+		return this.evaluateBooleanArray(booleanArray);
+	} 
+	
+	
+	
+	/**
+	 * parameter: array of booleans
+	 * returns true if the array is longer than 0 and all the booleans are true
+	 * otherwise returns false
+	 */
+	private boolean evaluateBooleanArray(boolean array[])
+	{
+		boolean bool = true;
+		for(boolean i : array)
+		{
+			bool = bool && i;
+		}
+		return bool && (array.length>0);
+	}
 
 }

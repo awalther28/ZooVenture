@@ -5,7 +5,6 @@ package ZooVenture;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -70,7 +69,7 @@ public class ControlView extends JFrame implements ActionListener{
         add(this.buttons);
         add(this.inventoryScrollPane);    
         add(this.statsPanel); 
-	
+        
 		this.requestFocus();
 	}
 	
@@ -197,23 +196,49 @@ public class ControlView extends JFrame implements ActionListener{
 		this.inventory.setListData(this.model.getInventory());
 	}
 	
-	//update control view
-	@Override
-	public void paint(Graphics g)
+	public void checkRoom()
 	{
-		super.paintComponents(g);
-		g.setColor(Color.DARK_GRAY);
-		updateGraphics();		
-        try {
-            Thread.sleep(20);
-            this.repaint();
-        }
-        catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+		int animalIndex = model.checkForAnimal();
+		if(animalIndex > -1)
+		{
+			this.animalEncounter(animalIndex);
+		}
 	}
+
+	public void animalEncounter(int animalIndex)
+	{
+		int keepGoing = model.animalEncounter(animalIndex);
+		this.updateHealth();
+		if (keepGoing == 0)
+		{
+			//you lost the game
+			//remove items from frame and inform player that they lost
+			remove(this.buttons);
+	        remove(this.inventoryScrollPane);    
+	        remove(this.statsPanel); 
+	        
+	        for (int i = 0; i < this.graphicsPanels.size(); i++)
+	        {
+	        	remove(this.graphicsPanels.get(i));
+	        }
 	
-	
+	        getContentPane().setBackground(Color.BLACK);
+			setLayout(new BorderLayout());
+			JLabel lost = new JLabel(); //"You lost...");
+			lost.setIcon(GraphicsFactory.getOriginalImage("lost.png"));
+			lost.setHorizontalAlignment(JLabel.CENTER);
+			lost.setVerticalAlignment(JLabel.CENTER);
+			add(lost, BorderLayout.CENTER);
+		}
+		else if (keepGoing == -1)
+		{
+			model.sedateAnimal(animalIndex);
+		}
+		
+		this.updateGraphics();
+		
+	}
+
 	//handle button clicked actions
 	@Override 
 	public void actionPerformed(ActionEvent ae)
@@ -259,48 +284,6 @@ public class ControlView extends JFrame implements ActionListener{
 		this.updateGraphics();
 	}
 	
-	public void checkRoom()
-	{
-		int animalIndex = model.checkForAnimal();
-		if(animalIndex > -1)
-		{
-			this.animalEncounter(animalIndex);
-		}
-	}
-	public void animalEncounter(int animalIndex)
-	{
-		int keepGoing = model.animalEncounter(animalIndex);
-		this.updateHealth();
-		if (keepGoing == 0)
-		{
-			//you lost the game
-			//remove items from frame and inform player that they lost
-			remove(this.buttons);
-	        remove(this.inventoryScrollPane);    
-	        remove(this.statsPanel); 
-	        
-	        for (int i = 0; i < this.graphicsPanels.size(); i++)
-	        {
-	        	remove(this.graphicsPanels.get(i));
-	        }
-
-	        getContentPane().setBackground(Color.BLACK);
-			setLayout(new BorderLayout());
-			JLabel lost = new JLabel(); //"You lost...");
-			lost.setIcon(GraphicsFactory.getOriginalImage("lost.png"));
-			lost.setHorizontalAlignment(JLabel.CENTER);
-			lost.setVerticalAlignment(JLabel.CENTER);
-			add(lost, BorderLayout.CENTER);
-		}
-		else if (keepGoing == -1)
-		{
-			model.sedateAnimal(animalIndex);
-		}
-		
-		this.updateGraphics();
-		
-	}
-	
 	public void registerListener(InventoryListener listener)
 	{
 		this.inventory.addListSelectionListener(listener);
@@ -317,6 +300,42 @@ public class ControlView extends JFrame implements ActionListener{
 			return model.getItemInInventory(index);
 		}
 		return null;
+	}
+
+	//update control view
+	@Override
+	public void paint(Graphics g)
+	{
+		super.paintComponents(g);	
+	    try {
+	        Thread.sleep(20);
+	        this.repaint();
+	    }
+	    catch (InterruptedException e) {
+	        e.printStackTrace();
+	    }
+	}
+
+	/**
+	 * 
+	 */
+	public void win() {
+		remove(this.buttons);
+        remove(this.inventoryScrollPane);    
+        remove(this.statsPanel); 
+        
+        for (int i = 0; i < this.graphicsPanels.size(); i++)
+        {
+        	remove(this.graphicsPanels.get(i));
+        }
+
+        getContentPane().setBackground(Color.WHITE);
+		setLayout(new BorderLayout());
+		JLabel won = new JLabel("You WON!");
+		//lost.setIcon(GraphicsFactory.getOriginalImage("lost.png"));
+		won.setHorizontalAlignment(JLabel.CENTER);
+		won.setVerticalAlignment(JLabel.CENTER);
+		add(won, BorderLayout.CENTER);
 	}
 
 }

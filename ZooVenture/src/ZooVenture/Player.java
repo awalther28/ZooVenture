@@ -17,7 +17,7 @@ public class Player {
 	
 	public Player()
 	{
-		this.hp = 0;
+		this.hp = 1000;
 		this.strength = 50;
 		this.inventory = new ArrayList<MazeObject>();
 	}

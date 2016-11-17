@@ -13,10 +13,10 @@ public class Animal extends MazeObject {
 	int hp;
 	int strength;
 	String liveImage;
-	String sedatedImage;
+	String silhouetteImage;
 	Tuple habitat;
 	
-	public Animal(String name, String hp, String strength, String dest, String liveImage, String sedatedImage) {
+	public Animal(String name, String hp, String strength, String dest, String liveImage, String silhouetteImage) {
 		super("animal", liveImage);
 		this.name = name;
 		this.hp = Integer.parseInt(hp);
@@ -24,7 +24,7 @@ public class Animal extends MazeObject {
 		String coords[] = dest.split(",");
 		this.habitat = new Tuple(Integer.parseInt(coords[1]), Integer.parseInt(coords[0]));
 		this.liveImage = liveImage;
-		this.sedatedImage = sedatedImage;
+		this.silhouetteImage = silhouetteImage;
 	}
 
 	@Override
@@ -32,7 +32,17 @@ public class Animal extends MazeObject {
 	{
 		return this.name;
 	}
+	
+	public Tuple getHabitat()
+	{
+		return this.habitat;
+	}
 
+	public String getSilhouetteImage()
+	{
+		return this.silhouetteImage;
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -57,14 +67,16 @@ public class Animal extends MazeObject {
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
-		if (sedatedImage == null) {
-			if (other.sedatedImage != null)
-				return false;
-		} else if (!sedatedImage.equals(other.sedatedImage))
-			return false;
-		if (strength != other.strength)
-			return false;
 		return true;
 	}
+
+	/**
+	 * @param image
+	 */
+	public void setSilhouetteImage(String image) {
+		this.silhouetteImage = image;	
+	}
+
+
 	
 }

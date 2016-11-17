@@ -28,11 +28,13 @@ public class MiniMapView extends JFrame{
 	private JPanel[][] graphicBoard;
 	private JLabel[][] labelBoard;
 	private JLabel[][] indicatorBoard;
+	private final int X_DIMENSION = 400;
+	private final int Y_DIMENSION = 400;
 	
 	public MiniMapView(GameModel model)
 	{ 
 		this.model = model;
-		setSize(400,400);
+		setSize(X_DIMENSION,Y_DIMENSION);
 		setLocation(900,300);
 		GridLayout layout = new GridLayout(model.getY(), model.getX());
 		layout.setHgap(1);
@@ -61,7 +63,14 @@ public class MiniMapView extends JFrame{
 				room = model.getRoom(x, y);
 				if (room.isAWall)
 				{
-					addImage(roomGraphic, roomLabel, "foliage.jpg", Color.BLACK, new Color(9, 109, 14));
+					addImage(roomGraphic, roomLabel, "foliage.jpg", new Color(9, 109, 14));
+				}
+				if (room.isAHabitat)
+				{
+					//roomGraphic.add(indicator);
+					//figure out how to structure visual of habitat indication on minimap
+					String animalImage = this.model.getInhabitantImage(y,x);
+					addImage(roomGraphic, roomLabel, animalImage, new Color(9, 109, 14));
 				}
 				else if(room.getContents().size() > 0)
 				{
@@ -105,16 +114,16 @@ public class MiniMapView extends JFrame{
 		
 		switch(model.getOrientation()){
 			case("S"):
-				addImage(this.graphicBoard[y][x], this.labelBoard[y][x], "S.png", Color.YELLOW);
+				addImage(this.graphicBoard[y][x], this.labelBoard[y][x], "S.png", Color.WHITE);
 				break;
 			case("N"):
-				addImage(this.graphicBoard[y][x], this.labelBoard[y][x], "N.png", Color.YELLOW);
+				addImage(this.graphicBoard[y][x], this.labelBoard[y][x], "N.png", Color.WHITE);
 				break;
 			case("W"):
-				addImage(this.graphicBoard[y][x], this.labelBoard[y][x], "W.png", Color.YELLOW);
+				addImage(this.graphicBoard[y][x], this.labelBoard[y][x], "W.png", Color.WHITE);
 				break;
 			case("E"):
-				addImage(this.graphicBoard[y][x], this.labelBoard[y][x], "E.png", Color.YELLOW);
+				addImage(this.graphicBoard[y][x], this.labelBoard[y][x], "E.png", Color.WHITE);
 				break;
 		}
 	}
@@ -130,16 +139,21 @@ public class MiniMapView extends JFrame{
 				{
 					if (room.getContents().size() > 2)
 					{
-						addImage(this.graphicBoard[y][x], this.indicatorBoard[y][x], "redSquare.png", Color.RED);
+						addImage(this.graphicBoard[y][x], this.indicatorBoard[y][x], "redSquare.png", Color.WHITE, Color.WHITE);
 					}
 					else if (room.getContents().size() == 2)
 					{
-						addImage(this.graphicBoard[y][x], this.indicatorBoard[y][x], "greenSquare.png", Color.GREEN);
+						addImage(this.graphicBoard[y][x], this.indicatorBoard[y][x], "greenSquare.png", Color.WHITE, Color.WHITE);
 					}
 					else if (room.getContents().size() == 1)
 					{
-						addImage(this.graphicBoard[y][x], this.indicatorBoard[y][x], "blackSquare.png", Color.BLACK);
+						addImage(this.graphicBoard[y][x], this.indicatorBoard[y][x], "blackSquare.png", Color.WHITE,Color.WHITE);
 					}
+				}
+				if(room.isAHabitat)
+				{
+					String animalImage = this.model.getInhabitantImage(y,x);
+					addImage(this.graphicBoard[y][x], this.labelBoard[y][x], animalImage, new Color(9, 109, 14));
 				}
 				else
 					this.graphicBoard[y][x].setBackground(Color.WHITE);
@@ -149,6 +163,25 @@ public class MiniMapView extends JFrame{
 	
 			
 	public void addImage(JPanel panel, JLabel label, String image, Color altColor)
+	{
+			ImageIcon imageIcon = null;
+			if (panel.getWidth() == 0 & panel.getHeight() == 0)
+			{
+				int x = this.X_DIMENSION/model.getX();
+				int y = this.Y_DIMENSION/model.getY();
+				imageIcon = GraphicsFactory.getMiniMapTile(image, x, y);
+			}
+			else
+			{
+				// http://stackoverflow.com/questions/10634417/image-resize-to-fit-on-jpanel
+				imageIcon = GraphicsFactory.getMiniMapTile(image, panel.getWidth(), panel.getHeight());
+			}
+			label.setIcon(imageIcon);
+			panel.setBackground(altColor);
+			label.setBackground(altColor);	
+	}
+	
+	public void addImage(JPanel panel, JLabel label, String image, Color altColor, Color backgroundColor)
 	{
 		BufferedImage img;
 		try {		
@@ -164,32 +197,9 @@ public class MiniMapView extends JFrame{
 				rescaledImage = img.getScaledInstance(panel.getWidth(), panel.getHeight(), Image.SCALE_SMOOTH);
 			}
 			label.setIcon(new ImageIcon(rescaledImage));
-			panel.setBackground(Color.WHITE);
-		} catch (IOException e) {
-			System.out.println("Image was not found.");
-			label.setBackground(altColor);	
-		}
-	}
-	
-	public void addImage(JPanel panel, JLabel label, String image, Color altColor, Color backgroundColor)
-	{
-		BufferedImage img;
-		try {		
-			img = ImageIO.read(new File("src/Images/"+image));
-			Image rescaledImage = null;
-			if (panel.getWidth() == 0 & panel.getHeight() == 0)
-			{
-				rescaledImage = img.getScaledInstance(50, 70, Image.SCALE_SMOOTH);
-			}
-			else
-			{
-				// http://stackoverflow.com/questions/10634417/image-resize-to-fit-on-jpanel
-				rescaledImage = img.getScaledInstance(panel.getWidth(), panel.getHeight(), Image.SCALE_SMOOTH);
-			}
-			label.setIcon(new ImageIcon(rescaledImage));
 			panel.setBackground(backgroundColor);
 		} catch (IOException e) {
-			System.out.println("Image was not found.");
+			System.out.println("Image was not found: " + image);
 			label.setBackground(altColor);	
 		}
 	}
@@ -225,12 +235,5 @@ public class MiniMapView extends JFrame{
 	 */
 	public void setGraphicBoard(JPanel[][] graphicBoard) {
 		this.graphicBoard = graphicBoard;
-	}
-
-	/**
-	 * @param b
-	 */
-
-	
-	
+	}	
 }

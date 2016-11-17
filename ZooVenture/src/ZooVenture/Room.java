@@ -12,7 +12,9 @@ import java.util.ArrayList;
 public class Room {
 
 	boolean isAWall;
+	boolean isAHabitat;
 	ArrayList<MazeObject> contents;
+	MazeObject sedatedAnimal;
 	
 	public Room(char identifier) {
 		if (identifier == 'W')
@@ -20,7 +22,10 @@ public class Room {
 			this.isAWall = true;
 		}
 		else
+		{
 			this.isAWall = false;
+			this.isAHabitat = false;
+		}
 		this.contents = new ArrayList<MazeObject>();
 	}
 	
@@ -70,5 +75,13 @@ public class Room {
 				return i;
 		}
 		return -1;
+	}
+
+	/**
+	 * @param animals
+	 * @return
+	 */
+	public boolean containsItems(ArrayList<Animal> animals) {
+		return this.contents.containsAll(animals);
 	}
 }

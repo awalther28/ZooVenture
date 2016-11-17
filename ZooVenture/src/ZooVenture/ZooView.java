@@ -93,9 +93,15 @@ public class ZooView extends JFrame {
 					int x = model.getPlayerLocationX();
 					int y = model.getPlayerLocationY();
 					ArrayList<MazeObject> stuff = model.getRoom(x,y).getContents();
-					model.addAllInventory(stuff);
+					ArrayList<MazeObject> validContents = new ArrayList<MazeObject>();
+					for(int i = 0; i < stuff.size(); i ++)
+					{
+						if(! stuff.get(i).type.equals("animal"))
+							validContents.add(stuff.get(i));
+					}
+					model.addAllInventory(validContents);
 					view.updateInventory();
-					model.removeItemsFromRoom(stuff);
+					model.removeItemsFromRoom(validContents);
 				}
 				
 			}		

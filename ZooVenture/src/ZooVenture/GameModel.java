@@ -20,35 +20,13 @@ public class GameModel {
 	{
 		player = new Player();
 		board = new Board(boardFile, animalFile, itemFile);
-		orientation = "N";
+		orientation = "N";		
 	}
 	
 	public void move(String direction)
 	{
 		String adjDirection = adjustMoveDirection(direction);
 		board.move(adjDirection);
-	}
-	
-	/**
-	 * @return -1 if no live animals; else returns the index of where the animal 
-	 * is in the room contents array
-	 */
-	public int checkForAnimal()
-	{
-		return board.board[getPlayerLocationY()][getPlayerLocationX()].containsLiveAnimal();	
-	}
-	
-	/**
-	 * turns normal animal into sedated animal; adds to player's inventory
-	 * @param index of animal whose health is less than 0
-	 * 
-	 */
-	public void sedateAnimal(int index)
-	{
-		Animal animal = (Animal) board.board[getPlayerLocationY()][getPlayerLocationX()].contents.get(index);
-		board.board[getPlayerLocationY()][getPlayerLocationX()].contents.remove(index);
-		animal.setType("sedated animal");
-		addInventory(animal);
 	}
 	
 	/**
@@ -90,6 +68,28 @@ public class GameModel {
 		}			
 		return null;
 	}
+
+	/**
+	 * @return -1 if no live animals; else returns the index of where the animal 
+	 * is in the room contents array
+	 */
+	public int checkForAnimal()
+	{
+		return board.board[getPlayerLocationY()][getPlayerLocationX()].containsLiveAnimal();	
+	}
+	
+	/**
+	 * turns normal animal into sedated animal; adds to player's inventory
+	 * @param index of animal whose health is less than 0
+	 * 
+	 */
+	public void sedateAnimal(int index)
+	{
+		Animal animal = (Animal) board.board[getPlayerLocationY()][getPlayerLocationX()].contents.get(index);
+		board.board[getPlayerLocationY()][getPlayerLocationX()].contents.remove(index);
+		animal.setType("sedated animal");
+		addInventory(animal);
+	}
 	
 	/**
 	 * * simulates one attack
@@ -102,12 +102,17 @@ public class GameModel {
 		if(animal.strength > player.strength)
 		{
 			player.hp -= (animal.strength - player.strength);
-			animal.hp -= 5;
+			animal.hp -= (animal.strength - player.strength)/2;
+		}
+		else if(animal.strength == player.strength)
+		{
+			player.hp -= 8; 
+			animal.hp -= 8; 
 		}
 		else
 		{
 			animal.hp -= (player.strength - animal.strength);
-			player.hp -= 5;
+			player.hp -= (player.strength - animal.strength)/2;
 		}
 		
 		System.out.println("Animal HP: " + animal.hp);
@@ -140,13 +145,15 @@ public class GameModel {
 		player.addInventory(object);
 	}
 	
-	/**
-	 * @return
-	 */
-	public String getHealth() {
-		return player.getHPString();
+	public MazeObject getItemInInventory(int index) {
+		return player.getItemInInventory(index);
 	}
-	
+
+	public void removeItemFromInventory(MazeObject object)
+	{
+		player.removeInventoryItem(object);
+	}
+
 	public int getX()
 	{
 		return board.x;
@@ -177,6 +184,12 @@ public class GameModel {
 		return orientation;
 	}
 	
+	
+	/**
+	 * 
+	 * @param dir of R or L indicating if the user wants to rotate 90 degrees right or left
+	 * changes orientation to match the new direction
+	 */
 	public void changeOrientation(String dir)
 	{
 		switch(orientation)
@@ -209,31 +222,26 @@ public class GameModel {
 	}
 
 	/**
-	 * @param stuff
+	 * @return
 	 */
-	public void removeItemsFromRoom(ArrayList<MazeObject> stuff) {
-		board.board[getPlayerLocationY()][getPlayerLocationX()].removeItemsFromRoom(stuff);	
+	public String getHealth() {
+		return player.getHPString();
 	}
-
-	public void removeItemFromInventory(MazeObject object)
-	{
-		player.removeInventoryItem(object);
-	}
-
-	
-	public MazeObject getItemInInventory(int index) {
-		return player.getItemInInventory(index);
-	}
-
 
 	public void increaseHP(int effectValue) {
 		player.updateHP(effectValue);
 	}
 
 
+	/**
+	 * @param stuff
+	 */
+	public void removeItemsFromRoom(ArrayList<MazeObject> stuff) {
+		board.board[getPlayerLocationY()][getPlayerLocationX()].removeItemsFromRoom(stuff);	
+	}
+
 	public void addItemToRoom(MazeObject obj) {
 		board.board[getPlayerLocationY()][getPlayerLocationX()].addItemToRoom(obj);
-		
 	}
 
 
@@ -245,7 +253,24 @@ public class GameModel {
 	 * @return
 	 */
 	public String getStrength() {
-		return player.getHPString();
+		return String.valueOf(player.strength);
+	}
+
+	/**
+	 * @return
+	 */
+	public Boolean checkHabitats() {
+		return board.checkHabitats();
+	}
+
+	/**
+	 * @param y
+	 * @param x
+	 */
+	public String getInhabitantImage(int y, int x) {
+		Tuple t = new Tuple(y,x);
+		ArrayList<Animal> animals = board.habitatDirectory.get(t);
+		return animals.get(0).getSilhouetteImage();
 	}
 
 }

@@ -31,6 +31,7 @@ public class GraphicsFactory {
 		}
 		return images.get(string);
 	}
+	
 
 	/**
 	 * @param string
@@ -45,6 +46,29 @@ public class GraphicsFactory {
 			return new ImageIcon(rescaledImage);
 		} catch (IOException e) {
 			System.out.println("Image was not found.");
+			return null;
+		}
+	}
+	
+	public static ImageIcon getMiniMapTile(String string, int x, int y)
+	{
+		if(!images.containsKey(string))
+		{
+			images.put(string, processMiniMapTile(string, x, y));
+		}
+		return images.get(string);
+	}
+	
+	public static ImageIcon processMiniMapTile(String string, int x, int y)
+	{
+		BufferedImage img;
+		try {		
+			img = ImageIO.read(new File("src/Images/"+string));
+			Image rescaledImage = null;
+			rescaledImage = img.getScaledInstance(y, x, Image.SCALE_SMOOTH);
+			return new ImageIcon(rescaledImage);
+		} catch (IOException e) {
+			System.out.println("Image was not found: "+string);
 			return null;
 		}
 	}

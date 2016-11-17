@@ -37,6 +37,11 @@ public class InventoryListener implements ListSelectionListener {
 				this.model.addItemToRoom(obj);
 				this.model.removeItemFromInventory(obj);
 				this.view.updateGraphics();
+				Boolean done = this.model.checkHabitats();
+				if (done)
+				{
+					this.view.win();
+				}
 			}
 			
 			if(obj.getType().equals("item"))

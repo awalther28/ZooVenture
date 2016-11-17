@@ -1,12 +1,12 @@
-8,11
-WWWWWWWW
-WWPW  WW
-W      W 
-WW     W
-WW     W
-WW     W
-WW W   W
-W   W  W
-W W W  W
-W W W WW
-WWWWWWWW
+16,11
+WWWWWWWWWWWWWWWW
+WW W  W    WWW W
+W            W W 
+WW     W W     W
+WW     W W     W
+WW     WWW     W
+WW W    W      W
+W  WW W  WWWW  W
+W WWW  W     W W
+WWWWW  P  WWWW W
+WWWWWWWWWWWWWWWW
