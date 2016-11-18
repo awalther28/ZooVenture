@@ -4,10 +4,12 @@
 package ZooVenture;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -17,7 +19,7 @@ import javax.swing.JPanel;
  *
  */
 @SuppressWarnings("serial")
-public class ZooView extends JFrame {
+public class ZooView extends JComponent {
 	/**
 	 * 
 	 */
@@ -73,7 +75,7 @@ public class ZooView extends JFrame {
 		JPanel p = this.panels.get(4);
 		Room room = this.model.getRoom(x, y);
 		p.removeAll();
-		p.setBackground(new Color(247, 225, 138));
+		p.setBackground(new Color(0,0,0,64));//247, 225, 138));
 		ArrayList<MazeObject> stuff = room.getContents();
 		for(int i = 0; i < stuff.size(); i++)
 		{
@@ -116,7 +118,7 @@ public class ZooView extends JFrame {
 					{
 						temp = this.labels.get(1);
 						temp.setIcon( GraphicsFactory.getGraphic(C_WALL));
-						temp.setBackground(Color.black);
+						temp.setBackground(new Color(0,0,0,64));
 						this.labels.remove(1);
 						this.labels.add(1, temp);
 					}
@@ -389,7 +391,7 @@ public class ZooView extends JFrame {
 					break;
 			}			
 		}
-
+	
 	}
 	
 

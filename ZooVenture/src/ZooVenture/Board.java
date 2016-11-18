@@ -177,7 +177,7 @@ public class Board {
 					this.playerLocation = new Tuple((py-1), px);		
 				}
 				else 
-					System.out.println("Sorry--there is a wall. \n\n");
+					ControlView.console.append("Sorry--there is a wall.\n");
 			}
 			else 
 				System.out.println("Sorry--you have reached the edge of the zoo. \n\n");
@@ -190,7 +190,7 @@ public class Board {
 					this.playerLocation = new Tuple((py+1), px);
 				}
 				else 
-					System.out.println("Sorry--there is a wall. \n\n");
+					ControlView.console.append("Sorry--there is a wall.\n");
 			}
 			else 
 				System.out.println("Sorry--you have reached the edge of the zoo. \n\n");
@@ -203,7 +203,7 @@ public class Board {
 					this.playerLocation = new Tuple(py, px+1);
 				}
 				else 
-					System.out.println("Sorry--there is a wall. \n\n");
+					ControlView.console.append("Sorry--there is a wall.\n");
 			}
 			else 
 				System.out.println("Sorry--you have reached the edge of the zoo. \n\n");
@@ -216,7 +216,7 @@ public class Board {
 					this.playerLocation = new Tuple(py, px-1);
 				}
 				else 
-					System.out.println("Sorry--there is a wall. \n\n");
+					ControlView.console.append("Sorry--there is a wall.\n");
 			}
 			else 
 				System.out.println("Sorry--you have reached the edge of the zoo. \n\n");

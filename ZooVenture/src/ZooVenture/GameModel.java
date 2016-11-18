@@ -89,6 +89,7 @@ public class GameModel {
 		board.board[getPlayerLocationY()][getPlayerLocationX()].contents.remove(index);
 		animal.setType("sedated animal");
 		addInventory(animal);
+		ControlView.console.append("You have successfully sedated " + animal.name + "\n");
 	}
 	
 	/**
@@ -115,6 +116,7 @@ public class GameModel {
 			player.hp -= (player.strength - animal.strength)/2;
 		}
 		
+		ControlView.console.append("Animal HP: " + animal.hp + "\n");
 		System.out.println("Animal HP: " + animal.hp);
 		
 		if (player.hp >= 0 & animal.hp >= 0)

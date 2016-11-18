@@ -5,8 +5,10 @@ package ZooVenture;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -18,6 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
 
 /**
@@ -45,6 +48,7 @@ public class ControlView extends JFrame implements ActionListener{
 	private JButton miniMapButton;
 	private ArrayList<JPanel> graphicsPanels;
 	private JPanel buttons;
+	static JTextArea console;
 	
 	public ControlView(GameModel model)
 	{
@@ -67,12 +71,45 @@ public class ControlView extends JFrame implements ActionListener{
         	add(this.graphicsPanels.get(i));
         }
         add(this.buttons);
-        add(this.inventoryScrollPane);    
+        add(this.createMiddlePanel());    
         add(this.statsPanel); 
         
 		this.requestFocus();
 	}
 	
+	public JPanel createMiddlePanel()
+	{
+		JPanel panel = new JPanel();
+		this.createInventoryPanel();
+		console = new JTextArea();
+		console.setEditable(false);
+		console.setLineWrap(true);
+		console.setWrapStyleWord(true);
+		JScrollPane pane = new JScrollPane(this.console);
+		pane.setVerticalScrollBarPolicy(
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		pane.setPreferredSize(new Dimension(233, 133));
+		console.append("Welcome to ZooVenture! \n The objective"
+				+ " of the game is to sedate all of the wild zoo animals "
+				+ "and return them to their rightful habitats. \n Open up the"
+				+ " MiniMap by clicking the button in the bottom right corner."
+				+ " You are the black arrow. The black silhouettes of animals "
+				+ "symbolize which animal belongs in that habitat. Once you put "
+				+ "the right animal(s) [there can more than one animal in a habitat!]"
+				+ " in the right habitat, the silhouette will turn into an image of the "
+				+ "animal. "
+				+ "\n After all the animals are rightfully return, you win! \n "
+				+ " If you run out of health while catching the animals, you die. \n"
+				+ "Click on items in your inventory to use them or drop them in the room "
+				+ "you are currently in. Click on items in a room to pick them all up. \n \n"
+				+ " Good luck and have fun! \n\n\n");
+		console.setCaretPosition(console.getDocument().getLength());
+
+		panel.add(this.inventoryScrollPane);
+		panel.add(pane);
+		return panel;
+		
+	}
 	public void createInventoryPanel()
 	{
         //creates inventory scroll pane
@@ -81,7 +118,11 @@ public class ControlView extends JFrame implements ActionListener{
         this.inventory.setVisibleRowCount(4);
         this.inventory.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         this.inventoryScrollPane = new JScrollPane(this.inventory);
-        //this.inventoryScrollPane.createVerticalScrollBar();
+        this.inventoryScrollPane.setBackground(Color.WHITE);
+        this.inventoryScrollPane.setPreferredSize(new Dimension(233, 100));
+        this.inventoryScrollPane.createVerticalScrollBar();
+        this.inventoryScrollPane.setVerticalScrollBarPolicy(
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         //this.inventoryScrollPane.setViewportBorder(BorderFactory.createEmptyBorder(30,15,30, 15));
 	}
 	
@@ -306,7 +347,12 @@ public class ControlView extends JFrame implements ActionListener{
 	@Override
 	public void paint(Graphics g)
 	{
-		super.paintComponents(g);	
+		super.paintComponents(g);
+		updateGraphics();
+//		g.setColor(Color.WHITE);
+//		g.drawLine(0, 0, 700, 700);
+//		g.draw3DRect(233, 300, 100, 100, true);
+	
 	    try {
 	        Thread.sleep(20);
 	        this.repaint();
