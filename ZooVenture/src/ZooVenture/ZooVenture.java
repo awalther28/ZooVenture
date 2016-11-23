@@ -23,14 +23,15 @@ public class ZooVenture {
 		ControlView view = new ControlView(model);
 		InventoryListener inventoryListener = new InventoryListener(model, view);
 		view.registerListener(inventoryListener);
-		//RepaintController repaintController = new RepaintController(model, view);
 		
 		
-		//new Timer(25, repaintController).start();
 		
 		view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		view.setSize(700, 700);
 		view.setVisible(true);
+		
+		Music themeSong = new Music("ZooVenture");
+		themeSong.loop();
 
 	}
 

@@ -6,13 +6,14 @@ package ZooVenture;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridLayout;
-import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -63,16 +64,31 @@ public class ControlView extends JFrame implements ActionListener{
         createStatsPanel(); 
         createInventoryPanel();
    
-        setLayout(new GridLayout(3,3));
+        FlowLayout flowLayout = new FlowLayout();
+        flowLayout.setHgap(0);
+        flowLayout.setVgap(0);
         
-        this.graphicsPanels = this.zoo.getPanels();
-        for (int i = 0; i < this.graphicsPanels.size(); i++)
-        {
-        	add(this.graphicsPanels.get(i));
-        }
-        add(this.buttons);
-        add(this.createMiddlePanel());    
-        add(this.statsPanel); 
+        setLayout(flowLayout);
+   
+        JPanel left = new JPanel();
+        left.setLayout(flowLayout);
+        left.add(this.zoo.getLeft());
+        add(left);
+        add(this.zoo.getMiddle());
+        JPanel right = new JPanel();
+        right.setLayout(flowLayout);
+        right.add(this.zoo.getRight());
+        add(right);
+        
+        
+        JPanel bottom = new JPanel();
+        bottom.setBackground(Color.white);
+        bottom.add(this.buttons);
+        bottom.add(this.createMiddlePanel());
+        bottom.add(this.statsPanel);
+       
+        add(bottom);
+        setBackground(Color.white);
         
 		this.requestFocus();
 	}
@@ -80,15 +96,16 @@ public class ControlView extends JFrame implements ActionListener{
 	public JPanel createMiddlePanel()
 	{
 		JPanel panel = new JPanel();
+		panel.setLayout(new GridLayout(2,0));
 		this.createInventoryPanel();
 		console = new JTextArea();
 		console.setEditable(false);
 		console.setLineWrap(true);
 		console.setWrapStyleWord(true);
-		JScrollPane pane = new JScrollPane(this.console);
+		JScrollPane pane = new JScrollPane(console);
 		pane.setVerticalScrollBarPolicy(
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		pane.setPreferredSize(new Dimension(233, 133));
+		pane.setPreferredSize(new Dimension(233, 100));
 		console.append("Welcome to ZooVenture! \n The objective"
 				+ " of the game is to sedate all of the wild zoo animals "
 				+ "and return them to their rightful habitats. \n Open up the"
@@ -107,6 +124,7 @@ public class ControlView extends JFrame implements ActionListener{
 
 		panel.add(this.inventoryScrollPane);
 		panel.add(pane);
+		panel.setBackground(Color.white);
 		return panel;
 		
 	}
@@ -154,8 +172,11 @@ public class ControlView extends JFrame implements ActionListener{
 	public JPanel createButtonPanel()
 	{
 		JPanel buttons = new JPanel();
-		buttons.setLayout(new GridLayout(3,3));
-		//buttons.setBounds(0, 700, 200, 200);
+		GridLayout gridLayout = new GridLayout(3,3);
+		gridLayout.setHgap(1);
+		gridLayout.setVgap(1);
+		buttons.setLayout(gridLayout);
+		buttons.setPreferredSize(new Dimension(233,200));
 		
 		//http://stackoverflow.com/questions/13503280/new-line-n-is-not-working-in-jbutton-settextfnord-nfoo
 		// used to figure out how to wrap text on button
@@ -266,7 +287,7 @@ public class ControlView extends JFrame implements ActionListener{
 	        getContentPane().setBackground(Color.BLACK);
 			setLayout(new BorderLayout());
 			JLabel lost = new JLabel(); //"You lost...");
-			lost.setIcon(GraphicsFactory.getOriginalImage("lost.png"));
+			//lost.setIcon(GraphicsFactory.getOriginalImage("lost.png"));
 			lost.setHorizontalAlignment(JLabel.CENTER);
 			lost.setVerticalAlignment(JLabel.CENTER);
 			add(lost, BorderLayout.CENTER);

@@ -18,18 +18,43 @@ import javax.swing.ImageIcon;
  */
 public class GraphicsFactory {
 
-	private static final Hashtable<String, ImageIcon> images = new Hashtable<String, ImageIcon>();
+	private static final Hashtable<String, ImageIcon> ImageIcons = new Hashtable<String, ImageIcon>();
+	private static final Hashtable<String, Image> Images = new Hashtable<String, Image>();
+
+	
+	
+	
+	public static Image getImage(String image) {
+		if(!Images.containsKey(image))
+		{
+			Images.put(image, getImagePrivate(image));
+		}
+		return Images.get(image);
+	}
+	
+	private static Image getImagePrivate(String image)
+	{
+		BufferedImage img;
+		try {		
+			img = ImageIO.read(new File("src/Images/"+image));
+			return img;
+		} catch (IOException e) {
+			System.out.println("Image was not found.");
+			return null;
+		}	
+	}
+
 
 	/**
 	 * @param string
 	 * @return
 	 */
-	public static ImageIcon getGraphic(String string) {
-		if(!images.containsKey(string))
+	public static ImageIcon getImageIcon(String string) {
+		if(!ImageIcons.containsKey(string))
 		{
-			images.put(string, getPanelGraphic(string));
+			ImageIcons.put(string, getImageIconPrivate(string));
 		}
-		return images.get(string);
+		return ImageIcons.get(string);
 	}
 	
 
@@ -37,12 +62,12 @@ public class GraphicsFactory {
 	 * @param string
 	 * @return null if no image was found in system else returns ImageIcon 
 	 */
-	private static ImageIcon getPanelGraphic(String string) {
+	private static ImageIcon getImageIconPrivate(String string) {
 		BufferedImage img;
 		try {		
 			img = ImageIO.read(new File("src/Images/"+string));
 			Image rescaledImage = null;
-			rescaledImage = img.getScaledInstance(233, 233, Image.SCALE_SMOOTH);
+			rescaledImage = img.getScaledInstance(233, 466, Image.SCALE_SMOOTH);
 			return new ImageIcon(rescaledImage);
 		} catch (IOException e) {
 			System.out.println("Image was not found.");
@@ -52,11 +77,11 @@ public class GraphicsFactory {
 	
 	public static ImageIcon getMiniMapTile(String string, int x, int y)
 	{
-		if(!images.containsKey(string))
+		if(!ImageIcons.containsKey(string))
 		{
-			images.put(string, processMiniMapTile(string, x, y));
+			ImageIcons.put(string, processMiniMapTile(string, x, y));
 		}
-		return images.get(string);
+		return ImageIcons.get(string);
 	}
 	
 	public static ImageIcon processMiniMapTile(String string, int x, int y)
@@ -84,17 +109,6 @@ public class GraphicsFactory {
 			Image rescaledImage = null;
 			rescaledImage = img.getScaledInstance(img.getWidth()/5, img.getHeight()/5, Image.SCALE_SMOOTH);
 			return new ImageIcon(rescaledImage);
-		} catch (IOException e) {
-			System.out.println("Image was not found.");
-			return null;
-		}
-	}
-	
-	public static ImageIcon getOriginalImage(String image) {
-		BufferedImage img;
-		try {		
-			img = ImageIO.read(new File("src/Images/"+image));
-			return new ImageIcon(img);
 		} catch (IOException e) {
 			System.out.println("Image was not found.");
 			return null;

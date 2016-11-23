@@ -3,16 +3,13 @@
  */
 package ZooVenture;
 
-import java.awt.Color;
-import java.awt.Graphics;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 /**
  * @author allisonwalther
@@ -20,21 +17,10 @@ import javax.swing.JPanel;
  */
 @SuppressWarnings("serial")
 public class ZooView extends JComponent {
-	/**
-	 * 
-	 */
-	private static final String L_OPEN_FLOOR = "lOpenFloor.png";
-	private static final String L_OPEN = "lOpen.png";
-	private static final String LFLOOR_WALL = "lfloorWall.png";
-	private static final String L_WALL = "lWall.png";
-	private static final String R_OPEN_FLOOR = "rOpenFloor.png";
-	private static final String R_OPEN = "rOpen.png";
-	private static final String RFLOOR_WALL = "rfloorWall.png";
-	private static final String R_WALL = "rWall.png";
-	private static final String C_OPEN = "cOpen.png";
-	private static final String C_WALL = "cWall.png";
-	ArrayList<JPanel> panels;
-	ArrayList<JLabel> labels;
+
+	JLabel left;
+	JLabel right;
+	PaintPane paintPane;
  	GameModel model;
 	ControlView view;
 	
@@ -43,27 +29,246 @@ public class ZooView extends JComponent {
 	{
 		this.model = gm;
 		this.view = cv;
-		this.panels = new ArrayList<JPanel>();
-		this.labels = new ArrayList<JLabel>();
-		
-		for(int i = 0; i < 6; i++)
-		{
-			JPanel p = new JPanel();
-			JLabel l = new JLabel();
-			p.add(l);
-			this.panels.add(p);
-			this.labels.add(l);
-		}
+
+		this.left = new JLabel();
+		this.right = new JLabel();
+		this.paintPane = new PaintPane("center_no_wall_back.png");
 		
 		this.setPanels();
 	}
-
-	public ArrayList<JPanel> getPanels()
+	
+	public JLabel getLeft()
 	{
-		return this.panels;
+		return this.left;
 	}
 	
+	public JLabel getRight()
+	{
+		return this.right;
+	}
 	
+	public PaintPane getMiddle()
+	{
+		return this.paintPane;
+	}
+	
+	public void setPanels()
+	{
+		int x = model.getPlayerLocationX();
+		int y = model.getPlayerLocationY();
+		String orientation = model.getOrientation();
+		Room[][] board = model.board.board;
+		
+		ArrayList<MazeObject> stuff = board[y][x].getContents();
+		ArrayList<String> images = new ArrayList<String>();
+		for(int i = 0; i < stuff.size(); i++)
+		{
+			images.add(stuff.get(i).getImage());
+		}
+		this.paintPane.setAnimalImages(images);
+		
+		this.paintPane.addMouseListener(new MouseAdapter() {
+			
+			public void mouseClicked(MouseEvent me)
+			{
+				if(stuff.size() > 0)
+				{	
+					int x = model.getPlayerLocationX();
+					int y = model.getPlayerLocationY();
+					ArrayList<MazeObject> stuff = model.getRoom(x,y).getContents();
+					ArrayList<MazeObject> validContents = new ArrayList<MazeObject>();
+					for(int i = 0; i < stuff.size(); i ++)
+					{
+						if(! stuff.get(i).type.equals("animal"))
+							validContents.add(stuff.get(i));
+					}
+					model.addAllInventory(validContents);
+					view.updateInventory();
+					model.removeItemsFromRoom(validContents);
+				}
+				
+			}		
+		});
+		
+		switch(orientation)
+		{
+			case("N"):
+				//set right view
+				if(board[y][x+1].isAWall)
+				{
+					if(board[y-1][x+1].isAWall)
+						this.right.setIcon(GraphicsFactory.getImageIcon("right_wall_both.png"));
+					else
+						this.right.setIcon(GraphicsFactory.getImageIcon("right_no_wall_front.png"));
+				}
+				else
+				{
+					if(board[y-1][x+1].isAWall)
+						this.right.setIcon(GraphicsFactory.getImageIcon("right_no_wall_back.png"));
+					else
+						this.right.setIcon(GraphicsFactory.getImageIcon("right_no_wall_both.png"));
+				}
+			
+				//set middle view
+				if(board[y-1][x].isAWall)
+					this.paintPane.setImage("center_wall_in_face.png");
+				else if(board[y-2][x].isAWall)
+					this.paintPane.setImage("center_wall.png");
+				else
+					this.paintPane.setImage("center_no_wall_back.png");
+			
+				//set left view
+				if(board[y][x-1].isAWall)
+				{
+					if(board[y-1][x-1].isAWall)
+						this.left.setIcon(GraphicsFactory.getImageIcon("left_wall_both.png"));
+					else
+						this.left.setIcon(GraphicsFactory.getImageIcon("left_no_wall_front.png"));
+				}
+				else
+				{
+					if(board[y-1][x-1].isAWall)
+						this.left.setIcon(GraphicsFactory.getImageIcon("left_no_wall_back.png"));
+					else
+						this.left.setIcon(GraphicsFactory.getImageIcon("left_no_wall_both.png"));
+				}
+				
+				break;
+				
+			case("S"):
+				//set right view
+				if(board[y][x-1].isAWall)
+				{
+					if(board[y+1][x-1].isAWall)
+						this.right.setIcon(GraphicsFactory.getImageIcon("right_wall_both.png"));
+					else
+						this.right.setIcon(GraphicsFactory.getImageIcon("right_no_wall_front.png"));
+				}
+				else
+				{
+					if(board[y+1][x-1].isAWall)
+						this.right.setIcon(GraphicsFactory.getImageIcon("right_no_wall_back.png"));
+					else
+						this.right.setIcon(GraphicsFactory.getImageIcon("right_no_wall_both.png"));
+				}
+			
+				//set middle view
+				if(board[y+1][x].isAWall)
+					this.paintPane.setImage("center_wall_in_face.png");
+				else if(board[y+2][x].isAWall)
+					this.paintPane.setImage("center_wall.png");
+				else
+					this.paintPane.setImage("center_no_wall_back.png");
+			
+				//set left view
+				if(board[y][x+1].isAWall)
+				{
+					if(board[y+1][x+1].isAWall)
+						this.left.setIcon(GraphicsFactory.getImageIcon("left_wall_both.png"));
+					else
+						this.left.setIcon(GraphicsFactory.getImageIcon("left_no_wall_front.png"));
+				}
+				else
+				{
+					if(board[y+1][x+1].isAWall)
+						this.left.setIcon(GraphicsFactory.getImageIcon("left_no_wall_back.png"));
+					else
+						this.left.setIcon(GraphicsFactory.getImageIcon("left_no_wall_both.png"));
+				}
+				
+				break;
+				
+			case("E"):
+				//set right view
+				if(board[y+1][x].isAWall)
+				{
+					if(board[y+1][x+1].isAWall)
+						this.right.setIcon(GraphicsFactory.getImageIcon("right_wall_both.png"));
+					else
+						this.right.setIcon(GraphicsFactory.getImageIcon("right_no_wall_front.png"));
+				}
+				else
+				{
+					if(board[y+1][x+1].isAWall)
+						this.right.setIcon(GraphicsFactory.getImageIcon("right_no_wall_back.png"));
+					else
+						this.right.setIcon(GraphicsFactory.getImageIcon("right_no_wall_both.png"));
+				}
+			
+				//set middle view
+				if(board[y][x+1].isAWall)
+					this.paintPane.setImage("center_wall_in_face.png");
+				else if(board[y][x+2].isAWall)
+					this.paintPane.setImage("center_wall.png");
+				else
+					this.paintPane.setImage("center_no_wall_back.png");
+			
+				//set left view
+				if(board[y-1][x].isAWall)
+				{
+					if(board[y-1][x+1].isAWall)
+						this.left.setIcon(GraphicsFactory.getImageIcon("left_wall_both.png"));
+					else
+						this.left.setIcon(GraphicsFactory.getImageIcon("left_no_wall_front.png"));
+				}
+				else
+				{
+					if(board[y-1][x+1].isAWall)
+						this.left.setIcon(GraphicsFactory.getImageIcon("left_no_wall_back.png"));
+					else
+						this.left.setIcon(GraphicsFactory.getImageIcon("left_no_wall_both.png"));
+				}
+				
+				break;
+				
+			case("W"):
+				//set right view
+				if(board[y-1][x].isAWall)
+				{
+					if(board[y-1][x-1].isAWall)
+						this.right.setIcon(GraphicsFactory.getImageIcon("right_wall_both.png"));
+					else
+						this.right.setIcon(GraphicsFactory.getImageIcon("right_no_wall_front.png"));
+				}
+				else
+				{
+					if(board[y-1][x-1].isAWall)
+						this.right.setIcon(GraphicsFactory.getImageIcon("right_no_wall_back.png"));
+					else
+						this.right.setIcon(GraphicsFactory.getImageIcon("right_no_wall_both.png"));
+				}
+			
+				//set middle view
+				if(board[y][x-1].isAWall)
+					this.paintPane.setImage("center_wall_in_face.png");
+				else if(board[y][x-2].isAWall)
+					this.paintPane.setImage("center_wall.png");
+				else
+					this.paintPane.setImage("center_no_wall_back.png");
+			
+				//set left view
+				if(board[y+1][x].isAWall)
+				{
+					if(board[y+1][x-1].isAWall)
+						this.left.setIcon(GraphicsFactory.getImageIcon("left_wall_both.png"));
+					else
+						this.left.setIcon(GraphicsFactory.getImageIcon("left_no_wall_front.png"));
+				}
+				else
+				{
+					if(board[y+1][x-1].isAWall)
+						this.left.setIcon(GraphicsFactory.getImageIcon("left_no_wall_back.png"));
+					else
+						this.left.setIcon(GraphicsFactory.getImageIcon("left_no_wall_both.png"));
+				}
+				
+				break;
+		}
+		
+		
+	}
+	
+	/*
 	@SuppressWarnings("static-access")
 	public void setPanels()
 	{
@@ -110,287 +315,8 @@ public class ZooView extends JComponent {
 		});
 		this.panels.remove(4);
 		this.panels.add(4, p);
-		
-			switch(orientation)
-			{
-				case("N"):
-					if (model.board.board[y-1][x].isAWall)
-					{
-						temp = this.labels.get(1);
-						temp.setIcon( GraphicsFactory.getGraphic(C_WALL));
-						temp.setBackground(new Color(0,0,0,64));
-						this.labels.remove(1);
-						this.labels.add(1, temp);
-					}
-					else
-					{
-						temp = this.labels.get(1);
-						temp.setIcon( GraphicsFactory.getGraphic(C_OPEN));
-						this.labels.remove(1);
-						this.labels.add(1, temp);
-					}
-				
-				
-					if (model.board.board[y][x+1].isAWall)
-					{
-						temp = this.labels.get(2);
-						temp.setIcon( GraphicsFactory.getGraphic(R_WALL));
-						this.labels.remove(2);
-						this.labels.add(2, temp);
-						
-						temp = this.labels.get(5);
-						temp.setIcon( GraphicsFactory.getGraphic(RFLOOR_WALL));
-						this.labels.remove(5);
-						this.labels.add(5, temp);
-					}
-					else
-					{
-						temp = this.labels.get(2);
-						temp.setIcon( GraphicsFactory.getGraphic(R_OPEN));
-						this.labels.remove(2);
-						this.labels.add(2, temp);
-						
-						temp = this.labels.get(5);
-						temp.setIcon( GraphicsFactory.getGraphic(R_OPEN_FLOOR));
-						this.labels.remove(5);
-						this.labels.add(5, temp);
-					}
-					
-					
-					if (model.board.board[y][x-1].isAWall)
-					{
-						temp = this.labels.get(0);
-						temp.setIcon( GraphicsFactory.getGraphic(L_WALL));
-						this.labels.remove(0);
-						this.labels.add(0, temp);
-						
-						temp = this.labels.get(3);
-						temp.setIcon( GraphicsFactory.getGraphic(LFLOOR_WALL));
-						this.labels.remove(3);
-						this.labels.add(3, temp);
-					}
-					else{
-						temp = this.labels.get(0);
-						temp.setIcon( GraphicsFactory.getGraphic(L_OPEN));
-						this.labels.remove(0);
-						this.labels.add(0, temp);
-						
-						temp = this.labels.get(3);
-						temp.setIcon( GraphicsFactory.getGraphic(L_OPEN_FLOOR));
-						this.labels.remove(3);
-						this.labels.add(3, temp);
-					}
-				break;
-						
-				case("S"):
-					if (model.board.board[y+1][x].isAWall)
-					{
-						temp = this.labels.get(1);
-						temp.setIcon( GraphicsFactory.getGraphic(C_WALL));
-						temp.setBackground(Color.black);
-						this.labels.remove(1);
-						this.labels.add(1, temp);
-					}
-					else
-					{
-						temp = this.labels.get(1);
-						temp.setIcon( GraphicsFactory.getGraphic(C_OPEN));
-						this.labels.remove(1);
-						this.labels.add(1, temp);
-					}
-					
-					if (model.board.board[y][x-1].isAWall)
-					{
-						temp = this.labels.get(2);
-						temp.setIcon( GraphicsFactory.getGraphic(R_WALL));
-						this.labels.remove(2);
-						this.labels.add(2, temp);
-						
-						temp = this.labels.get(5);
-						temp.setIcon( GraphicsFactory.getGraphic(RFLOOR_WALL));
-						this.labels.remove(5);
-						this.labels.add(5, temp);
-					}
-					else
-					{
-						temp = this.labels.get(2);
-						temp.setIcon( GraphicsFactory.getGraphic(R_OPEN));
-						this.labels.remove(2);
-						this.labels.add(2, temp);
-						
-						temp = this.labels.get(5);
-						temp.setIcon( GraphicsFactory.getGraphic(R_OPEN_FLOOR));
-						this.labels.remove(5);
-						this.labels.add(5, temp);
-					}
-					
-					
-					if (model.board.board[y][x+1].isAWall)
-					{
-						temp = this.labels.get(0);
-						temp.setIcon( GraphicsFactory.getGraphic(L_WALL));
-						this.labels.remove(0);
-						this.labels.add(0, temp);
-						
-						temp = this.labels.get(3);
-						temp.setIcon( GraphicsFactory.getGraphic(LFLOOR_WALL));
-						this.labels.remove(3);
-						this.labels.add(3, temp);
-					}
-					else{
-						temp = this.labels.get(0);
-						temp.setIcon( GraphicsFactory.getGraphic(L_OPEN));
-						this.labels.remove(0);
-						this.labels.add(0, temp);
-						
-						temp = this.labels.get(3);
-						temp.setIcon( GraphicsFactory.getGraphic(L_OPEN_FLOOR));
-						this.labels.remove(3);
-						this.labels.add(3, temp);
-					}
-					break;
-				
-					
-					
-				case("E"):
-					if (model.board.board[y][x+1].isAWall)
-					{
-						temp = this.labels.get(1);
-						temp.setIcon( GraphicsFactory.getGraphic(C_WALL));
-						temp.setBackground(Color.black);
-						this.labels.remove(1);
-						this.labels.add(1, temp);
-					}
-					else
-					{
-						temp = this.labels.get(1);
-						temp.setIcon( GraphicsFactory.getGraphic(C_OPEN));
-						this.labels.remove(1);
-						this.labels.add(1, temp);
-					}
-				
-					if (model.board.board[y+1][x].isAWall)
-					{
-						temp = this.labels.get(2);
-						temp.setIcon( GraphicsFactory.getGraphic(R_WALL));
-						this.labels.remove(2);
-						this.labels.add(2, temp);
-						
-						temp = this.labels.get(5);
-						temp.setIcon( GraphicsFactory.getGraphic(RFLOOR_WALL));
-						this.labels.remove(5);
-						this.labels.add(5, temp);
-					}
-					else
-					{
-						temp = this.labels.get(2);
-						temp.setIcon( GraphicsFactory.getGraphic(R_OPEN));
-						this.labels.remove(2);
-						this.labels.add(2, temp);
-						
-						temp = this.labels.get(5);
-						temp.setIcon( GraphicsFactory.getGraphic(R_OPEN_FLOOR));
-						this.labels.remove(5);
-						this.labels.add(5, temp);
-					}
-					
-					
-					if (model.board.board[y-1][x].isAWall)
-					{
-						temp = this.labels.get(0);
-						temp.setIcon( GraphicsFactory.getGraphic(L_WALL));
-						this.labels.remove(0);
-						this.labels.add(0, temp);
-						
-						temp = this.labels.get(3);
-						temp.setIcon( GraphicsFactory.getGraphic(LFLOOR_WALL));
-						this.labels.remove(3);
-						this.labels.add(3, temp);
-					}
-					else{
-						temp = this.labels.get(0);
-						temp.setIcon( GraphicsFactory.getGraphic(L_OPEN));
-						this.labels.remove(0);
-						this.labels.add(0, temp);
-						
-						temp = this.labels.get(3);
-						temp.setIcon( GraphicsFactory.getGraphic(L_OPEN_FLOOR));
-						this.labels.remove(3);
-						this.labels.add(3, temp);
-					}
-						
-					break;
-				
-				case("W"):
-					if (model.board.board[y][x-1].isAWall)
-					{
-						temp = this.labels.get(1);
-						temp.setIcon( GraphicsFactory.getGraphic(C_WALL));
-						temp.setBackground(Color.black);
-						this.labels.remove(1);
-						this.labels.add(1, temp);
-					}
-					else
-					{
-						temp = this.labels.get(1);
-						temp.setIcon( GraphicsFactory.getGraphic(C_OPEN));
-						this.labels.remove(1);
-						this.labels.add(1, temp);
-					}
-				
-					if (model.board.board[y-1][x].isAWall)
-					{
-						temp = this.labels.get(2);
-						temp.setIcon( GraphicsFactory.getGraphic(R_WALL));
-						this.labels.remove(2);
-						this.labels.add(2, temp);
-						
-						temp = this.labels.get(5);
-						temp.setIcon( GraphicsFactory.getGraphic(RFLOOR_WALL));
-						this.labels.remove(5);
-						this.labels.add(5, temp);
-					}
-					else
-					{
-						temp = this.labels.get(2);
-						temp.setIcon( GraphicsFactory.getGraphic(R_OPEN));
-						this.labels.remove(2);
-						this.labels.add(2, temp);
-						
-						temp = this.labels.get(5);
-						temp.setIcon( GraphicsFactory.getGraphic(R_OPEN_FLOOR));
-						this.labels.remove(5);
-						this.labels.add(5, temp);
-					}
-					
-					
-					if (model.board.board[y+1][x].isAWall)
-					{
-						temp = this.labels.get(0);
-						temp.setIcon( GraphicsFactory.getGraphic(L_WALL));
-						this.labels.remove(0);
-						this.labels.add(0, temp);
-						
-						temp = this.labels.get(3);
-						temp.setIcon( GraphicsFactory.getGraphic(LFLOOR_WALL));
-						this.labels.remove(3);
-						this.labels.add(3, temp);
-					}
-					else{
-						temp = this.labels.get(0);
-						temp.setIcon( GraphicsFactory.getGraphic(L_OPEN));
-						this.labels.remove(0);
-						this.labels.add(0, temp);
-						
-						temp = this.labels.get(3);
-						temp.setIcon( GraphicsFactory.getGraphic(L_OPEN_FLOOR));
-						this.labels.remove(3);
-						this.labels.add(3, temp);
-					}
-						
-					break;
-			}			
-		}
+
+		*/
 	
 	}
 	
