@@ -1,10 +1,11 @@
-2,1
+5,1
 Tiger
 0
 10
 1,2
 tiger.png
 tigerSilhouette.png
+movingTiger.png
 2,2
 Elephant
 0
@@ -12,6 +13,7 @@ Elephant
 5,9
 elephant.png
 elephantSilhouette.png
+movingElephant.png
 1,2
 Flamingo
 0
@@ -19,6 +21,7 @@ Flamingo
 14,9
 flamingo.png
 flamingoSilhouette.png
+movingFlamingo.png
 3,3
 Penguin
 0
@@ -26,6 +29,7 @@ Penguin
 1,8
 penguin.png
 penguinSilhouette.png
+movingPenguin.png
 3,4
 Giraffe
 0
@@ -33,10 +37,12 @@ Giraffe
 8,4
 giraffe.png
 giraffeSilhouette.png
-3,4
+movingGiraffe.png
+3,5
 Giraffe
 0
 10
 8,4
 giraffe.png
 giraffeSilhouette.png
+movingGiraffe.png

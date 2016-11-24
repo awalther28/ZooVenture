@@ -102,7 +102,7 @@ public class GraphicsFactory {
 	 * @param image
 	 * @return
 	 */
-	public static ImageIcon getMazeObjectGraphic(String image) {
+	public static ImageIcon getImageI(String image) {
 		BufferedImage img;
 		try {		
 			img = ImageIO.read(new File("src/Images/"+image));

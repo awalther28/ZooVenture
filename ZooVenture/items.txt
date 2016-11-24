@@ -2,7 +2,9 @@
 potion
 Increase HP:5
 water.png
+water.png
 2,1
 potion
 Increase HP:5
+water.png
 water.png

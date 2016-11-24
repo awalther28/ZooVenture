@@ -61,11 +61,14 @@ public class ZooView extends JComponent {
 		
 		ArrayList<MazeObject> stuff = board[y][x].getContents();
 		ArrayList<String> images = new ArrayList<String>();
+		ArrayList<String> altImages = new ArrayList<String>();
 		for(int i = 0; i < stuff.size(); i++)
 		{
 			images.add(stuff.get(i).getImage());
+			altImages.add(stuff.get(i).getAltImage());
 		}
 		this.paintPane.setAnimalImages(images);
+		this.paintPane.setAltAnimalImages(altImages);
 		
 		this.paintPane.addMouseListener(new MouseAdapter() {
 			
@@ -80,7 +83,9 @@ public class ZooView extends JComponent {
 					for(int i = 0; i < stuff.size(); i ++)
 					{
 						if(! stuff.get(i).type.equals("animal"))
+						{
 							validContents.add(stuff.get(i));
+						}
 					}
 					model.addAllInventory(validContents);
 					view.updateInventory();
@@ -266,58 +271,7 @@ public class ZooView extends JComponent {
 		}
 		
 		
-	}
-	
-	/*
-	@SuppressWarnings("static-access")
-	public void setPanels()
-	{
-		int x = model.getPlayerLocationX();
-		int y = model.getPlayerLocationY();
-		String orientation = model.getOrientation();
-		JLabel temp = new JLabel();
-		
-		JPanel p = this.panels.get(4);
-		Room room = this.model.getRoom(x, y);
-		p.removeAll();
-		p.setBackground(new Color(0,0,0,64));//247, 225, 138));
-		ArrayList<MazeObject> stuff = room.getContents();
-		for(int i = 0; i < stuff.size(); i++)
-		{
-			JLabel obj = new JLabel(GraphicsFactory.getMazeObjectGraphic(stuff.get(i).getImage()));
-			p.add(obj);
-		}
-		p.addMouseListener(new MouseAdapter() {
-			
-			public void mouseClicked(MouseEvent me)
-			{
-				if(stuff.size() > 0)
-				{
-					p.removeAll();
-					panels.remove(4);
-					panels.add(4, p);
-					
-					int x = model.getPlayerLocationX();
-					int y = model.getPlayerLocationY();
-					ArrayList<MazeObject> stuff = model.getRoom(x,y).getContents();
-					ArrayList<MazeObject> validContents = new ArrayList<MazeObject>();
-					for(int i = 0; i < stuff.size(); i ++)
-					{
-						if(! stuff.get(i).type.equals("animal"))
-							validContents.add(stuff.get(i));
-					}
-					model.addAllInventory(validContents);
-					view.updateInventory();
-					model.removeItemsFromRoom(validContents);
-				}
-				
-			}		
-		});
-		this.panels.remove(4);
-		this.panels.add(4, p);
-
-		*/
-	
-	}
+	}	
+}
 	
 

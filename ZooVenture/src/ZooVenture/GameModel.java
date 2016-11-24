@@ -88,6 +88,7 @@ public class GameModel {
 		Animal animal = (Animal) board.board[getPlayerLocationY()][getPlayerLocationX()].contents.get(index);
 		board.board[getPlayerLocationY()][getPlayerLocationX()].contents.remove(index);
 		animal.setType("sedated animal");
+		animal.setAltImage(animal.getImage());
 		addInventory(animal);
 		ControlView.console.append("You have successfully sedated " + animal.name + "\n");
 	}

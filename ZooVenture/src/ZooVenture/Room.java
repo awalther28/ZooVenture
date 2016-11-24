@@ -72,7 +72,9 @@ public class Room {
 		for (int i = 0; i < this.contents.size(); i++)
 		{
 			if(this.contents.get(i).type.equals("animal"))
+			{
 				return i;
+			}
 		}
 		return -1;
 	}

@@ -7,13 +7,16 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
-
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -22,7 +25,9 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.Timer;
 
 /**
  * @author allisonwalther
@@ -50,10 +55,13 @@ public class ControlView extends JFrame implements ActionListener{
 	private ArrayList<JPanel> graphicsPanels;
 	private JPanel buttons;
 	static JTextArea console;
+	private ZooTimer timer;
+	JLabel time;
 	
 	public ControlView(GameModel model)
 	{
 		super("ZooVenture");
+	
 		this.model = model;
 		this.miniMapView = new MiniMapView(model);
         this.zoo = new ZooView(model, this);
@@ -89,7 +97,9 @@ public class ControlView extends JFrame implements ActionListener{
        
         add(bottom);
         setBackground(Color.white);
-        
+
+		this.timer = new ZooTimer(this, model);
+		
 		this.requestFocus();
 	}
 	
@@ -108,15 +118,9 @@ public class ControlView extends JFrame implements ActionListener{
 		pane.setPreferredSize(new Dimension(233, 100));
 		console.append("Welcome to ZooVenture! \n The objective"
 				+ " of the game is to sedate all of the wild zoo animals "
-				+ "and return them to their rightful habitats. \n Open up the"
-				+ " MiniMap by clicking the button in the bottom right corner."
-				+ " You are the black arrow. The black silhouettes of animals "
-				+ "symbolize which animal belongs in that habitat. Once you put "
-				+ "the right animal(s) [there can more than one animal in a habitat!]"
-				+ " in the right habitat, the silhouette will turn into an image of the "
-				+ "animal. "
-				+ "\n After all the animals are rightfully return, you win! \n "
-				+ " If you run out of health while catching the animals, you die. \n"
+				+ "and return them to their rightful habitats. \n"
+				+ "After all the animals are rightfully return, you win! \n "
+				+ " Don't run out of health! \n"
 				+ "Click on items in your inventory to use them or drop them in the room "
 				+ "you are currently in. Click on items in a room to pick them all up. \n \n"
 				+ " Good luck and have fun! \n\n\n");
@@ -146,6 +150,10 @@ public class ControlView extends JFrame implements ActionListener{
 	
 	public void createStatsPanel()
 	{
+		this.time = new JLabel("TIME: ");
+		this.time.setOpaque(true);
+		this.time.setBackground(Color.WHITE);
+		
         this.health = new JLabel("HEALTH:"+ model.getHealth());
 		this.health.setOpaque(true);
 		this.health.setBackground(Color.WHITE);
@@ -161,7 +169,8 @@ public class ControlView extends JFrame implements ActionListener{
 		this.miniMapButton.addActionListener(this);
 		
         this.statsPanel = new JPanel();
-        this.statsPanel.setLayout(new GridLayout(3,1));
+        this.statsPanel.setLayout(new GridLayout(4,1));
+        this.statsPanel.add(this.time);
         this.statsPanel.add(this.health);
         this.statsPanel.add(this.strength);
         this.statsPanel.add(this.miniMapButton);
@@ -283,11 +292,10 @@ public class ControlView extends JFrame implements ActionListener{
 	        {
 	        	remove(this.graphicsPanels.get(i));
 	        }
-	
-	        getContentPane().setBackground(Color.BLACK);
+	        getContentPane().removeAll();
+	        getContentPane().setBackground(Color.RED);
 			setLayout(new BorderLayout());
-			JLabel lost = new JLabel(); //"You lost...");
-			//lost.setIcon(GraphicsFactory.getOriginalImage("lost.png"));
+			JLabel lost = new JLabel("You lost...");
 			lost.setHorizontalAlignment(JLabel.CENTER);
 			lost.setVerticalAlignment(JLabel.CENTER);
 			add(lost, BorderLayout.CENTER);
@@ -308,6 +316,11 @@ public class ControlView extends JFrame implements ActionListener{
 		String action = ae.getActionCommand();
 		if(action.equals("Open"))
 		{
+			ControlView.console.append("You are the black arrow. The black silhouettes of animals "
+				+ "symbolize which animal belongs in that habitat. Once you put "
+				+ "the right animal(s) [there can more than one animal in a habitat!]"
+				+ " in the right habitat, the silhouette will turn into an image of the "
+				+ "animal.");
 			this.miniMapView.setVisible(true);
 		}
 		if(action.equals("S"))
@@ -370,9 +383,6 @@ public class ControlView extends JFrame implements ActionListener{
 	{
 		super.paintComponents(g);
 		updateGraphics();
-//		g.setColor(Color.WHITE);
-//		g.drawLine(0, 0, 700, 700);
-//		g.draw3DRect(233, 300, 100, 100, true);
 	
 	    try {
 	        Thread.sleep(20);
@@ -387,22 +397,96 @@ public class ControlView extends JFrame implements ActionListener{
 	 * 
 	 */
 	public void win() {
-		remove(this.buttons);
-        remove(this.inventoryScrollPane);    
-        remove(this.statsPanel); 
-        
-        for (int i = 0; i < this.graphicsPanels.size(); i++)
-        {
-        	remove(this.graphicsPanels.get(i));
-        }
+		getContentPane().removeAll();
+		BorderLayout bl = new BorderLayout();
+		bl.setHgap(0);
+		setLayout(bl);
 
-        getContentPane().setBackground(Color.WHITE);
-		setLayout(new BorderLayout());
-		JLabel won = new JLabel("You WON!");
-		//lost.setIcon(GraphicsFactory.getOriginalImage("lost.png"));
+		JLabel won = new JLabel(GraphicsFactory.getImageI("win_0.png"));
 		won.setHorizontalAlignment(JLabel.CENTER);
 		won.setVerticalAlignment(JLabel.CENTER);
-		add(won, BorderLayout.CENTER);
+		add(won, BorderLayout.NORTH);
+		
+		JLabel label = new JLabel("Enter your name: ");
+		label.setPreferredSize(new Dimension(150, 45));
+		label.setBackground(Color.WHITE);
+		JTextField textField = new JTextField();
+		textField.setPreferredSize(new Dimension(400,50));
+		JButton button = new JButton("Record Score!");
+		
+		button.setSize(new Dimension(100,50));
+		button.addActionListener(new ActionListener()
+		{public void actionPerformed(ActionEvent ae)
+			{
+				String name = textField.getText();
+				timer.updateTimeFile(name);
+				getContentPane().removeAll();
+				
+				try {
+					FileReader fileReader = new FileReader("./time.txt");		
+					BufferedReader stream = new BufferedReader(fileReader);
+					String s = stream.readLine();
+					String scoreBoard = "<html><left>";
+					int i = 1;
+					while(s != null & i < 16)
+					{
+						s = stream.readLine();
+						scoreBoard+= i+". "+s+" <br/><br/> ";
+						i++;
+					}
+					scoreBoard+= "</left></html>";
+					
+					JLabel label = new JLabel(scoreBoard);
+					label.setFont(new Font("TimesRoman", Font.BOLD, 18));
+					add(label, BorderLayout.CENTER);
+					stream.close();
+					fileReader.close();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			
+		});
+		
+		JLabel scoreLabel = null;
+		try {
+			FileReader fileReader = new FileReader("./time.txt");		
+			BufferedReader stream = new BufferedReader(fileReader);
+			String s = stream.readLine();
+			String scoreBoard = "<html><left>";
+			int i = 1;
+			while(s != null & i < 16)
+			{
+				s = stream.readLine();
+				scoreBoard+= i+". "+s+" <br/><br/> ";
+				i++;
+			}
+			scoreBoard+= "</left></html>";
+			
+			scoreLabel = new JLabel(scoreBoard);
+			scoreLabel.setFont(new Font("TimesRoman", Font.BOLD, 18));
+			scoreLabel.setPreferredSize(new Dimension(700, 645));
+			scoreLabel.setBackground(Color.WHITE);
+			stream.close();
+			fileReader.close();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		JPanel panel = new JPanel();
+		panel.setBackground(Color.WHITE);
+		panel.setPreferredSize(new Dimension(700,55));
+		panel.add(label);
+		panel.add(textField);
+		panel.add(button);
+		JPanel center = new JPanel();
+		center.setBackground(Color.WHITE);
+		center.add(panel);
+		center.add(scoreLabel);
+		add(center, BorderLayout.CENTER);
+        getContentPane().setBackground(Color.WHITE);
 	}
 
 }

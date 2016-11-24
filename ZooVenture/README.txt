@@ -9,22 +9,16 @@ cages. It is your job to sedate all of the animals and bring them
 back to their cages. When all of the animals are in their cages
 you win the game.
 
-
-UPDATE 11/01/2016:
 To move, either use the buttons. To use a hot key/shortcut for movement
 press alt+<up, down, right, or left arrow key>.
 
-The item indicator will disappear when you enter a room because you will
-be able to see what is in the room. The information about how many items
-in the room is not lost. When you exit the room, the item indicator will
-reappear, reflecting the number of items currently within the room.
- 
-UPDATES TO COME:
-update text file so the user can decide what orientation they want the 
-player to start in
-graphics for ZooView -- will use flyweight graphics factory
-create scrollbar for inventory list & add ways to interact with inventory
+Do not place more than one animal in a room at a time, the movement 
+won't work.
 
+The scoreboard only reflects the last 15 games played.
+
+Lastly, a special thank you goes out to Janie Ward for making
+all of my animals and the theme song for ZooVenture.
 
 // how to write a board.txt
 x,y //dimensions of the board
@@ -42,6 +36,7 @@ x,y //where the item is located
 <name of the item>
 Increase HP:<int value> or Increase Strength:<int value> or None
 <image file name>
+<image for movement>
 
 
 
@@ -53,4 +48,5 @@ x,y //where the animal is located
 <int strength>
 x,y //where the animal needs to be in order to win the game
 <image file name of live animal>
-<image file name of passed out animal>
+<image file name of silhouette of animal for mini map>
+<image file name of movement>

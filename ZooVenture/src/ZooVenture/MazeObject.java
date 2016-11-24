@@ -10,11 +10,13 @@ package ZooVenture;
 public class MazeObject {
 	String type;
 	String image;
+	String altImage;
 	
-	public MazeObject(String type, String image)
+	public MazeObject(String type, String image, String altImage)
 	{
 		this.type = type;
 		this.image = image;
+		this.altImage = altImage;
 	}
 	
 	public String getType()
@@ -65,5 +67,19 @@ public class MazeObject {
 	public String toString()
 	{
 		return String.valueOf(this.type);
+	}
+
+	/**
+	 * @return
+	 */
+	public String getAltImage() {
+		return this.altImage;
+	}
+
+	/**
+	 * @param image2
+	 */
+	public void setAltImage(String image2) {
+		this.altImage = image2;
 	}
 }

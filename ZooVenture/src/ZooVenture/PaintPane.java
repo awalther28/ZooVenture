@@ -20,6 +20,8 @@ public class PaintPane extends JPanel{
 	public JPanel panel;
 	private String IMAGE;
 	private ArrayList<String> ANIMAL_IMAGES;
+	private ArrayList<String> ANIMAL_ALT_IMAGES; 
+	private Boolean change;
 	
 	public PaintPane(String Image)
 	{
@@ -29,7 +31,9 @@ public class PaintPane extends JPanel{
 		panel.setPreferredSize(new Dimension(233, 466));
 		
 		this.ANIMAL_IMAGES = new ArrayList<String>();
+		this.ANIMAL_ALT_IMAGES = new ArrayList<String>();
 		this.IMAGE = Image;
+		this.change = false;
 	}
 	
 	public void setImage(String image)
@@ -40,6 +44,10 @@ public class PaintPane extends JPanel{
 	public void setAnimalImages(ArrayList<String> images)
 	{
 		this.ANIMAL_IMAGES = images;
+	}
+	
+	public void setAltAnimalImages(ArrayList<String> altImages) {
+		this.ANIMAL_ALT_IMAGES = altImages;	
 	}
 	
 	@Override
@@ -61,7 +69,16 @@ public class PaintPane extends JPanel{
 		{
 			for(int i = 0; i < this.ANIMAL_IMAGES.size(); i++)
 			{
-				g.drawImage(GraphicsFactory.getImage(this.ANIMAL_IMAGES.get(i)), x, y, null);
+				if(!this.change)
+				{
+					g.drawImage(GraphicsFactory.getImage(this.ANIMAL_IMAGES.get(i)), x, y, null);
+					this.change = true;
+				}
+				else
+				{
+					g.drawImage(GraphicsFactory.getImage(this.ANIMAL_ALT_IMAGES.get(i)), x, y, null);
+					this.change = false;
+				}
 				x+=30;
 			}
 		}
@@ -71,16 +88,17 @@ public class PaintPane extends JPanel{
 			{
 				g.setFont(new Font("TimesRoman", Font.BOLD, 25));
 				g.setColor(Color.WHITE);
-				g.drawString("Rotate around!", 30, 460);		
+				g.drawString("Rotate around!", 30, 460);
 			}
 		}
 	
 	    try {
-	        Thread.sleep(20);
+	        Thread.sleep(100);
 	        this.repaint();
 	    }
 	    catch (InterruptedException e) {
 	        e.printStackTrace();
 	    }
 	}
+
 }
